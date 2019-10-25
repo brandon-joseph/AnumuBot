@@ -16,6 +16,23 @@ def cmplist(list): #Actually this function calls from another function
     if (len(list) > len(globlist)):
         globlist = list[:] #copy all element of list to globlist
 
+def chunkIt(seq, num):
+    avg = len(seq) / float(num)
+    out = []
+    last = 0.0
+
+    while last < len(seq):
+        out.append(seq[int(last):int(last + avg)])
+        last += avg
+
+    return out
+
+def prettylist(lst):
+    acc = ""
+    for b in lst[:-1]:
+        acc = acc + str(b) + ", "
+    return acc + str(lst[-1])
+
 
 
 # class MyClient(discord.Client):
@@ -59,6 +76,7 @@ async def helpme(ctx,arg):
         !headshot provides a headshot of the great god's face 
         !glenoku is exactly what you think it is 
         !timer time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
+        !maketeams: Divides list into random teams of size n 
         For specific syntax do !helpme <command>
         """)
     elif arg == "whatgame":
@@ -89,6 +107,10 @@ async def helpme(ctx,arg):
         await ctx.send("""
         !timer time | time must be a decimal number, i.e. 5.0,12.0. It cannot be an integer, i.e 1 or 3.
         """)
+    elif arg == "maketeams":
+        await ctx.send("""
+        !maketeams n <elt1, elt2, elt3,...> |  Divides list into random teams of size n 
+        """)
 
 
 """
@@ -102,6 +124,34 @@ async def whatgame(ctx, *args):
     cmplist(acc)
     game = random.choice(acc) 
     await ctx.send('How about ' + game + '?')
+
+
+"""
+maketeams(ctx,n,*args) divides people into teams of size n 
+"""
+@bot.command()
+async def maketeams(ctx, n,*args):
+    acc = []
+    for v in args:
+        acc.append(v)
+    random.shuffle(acc)
+    teams = chunkIt(acc, n)
+    i=1
+    t = False
+    finalteams="Teams:" + '\n'
+    for team in teams:
+        tem = prettylist(team)
+        if not(t): 
+            finalteams += "Team " + str(i) + ": " + tem
+            t = True
+            i+=1
+        else:
+            finalteams += '\n' + "Team " + str(i) + ": " + tem
+            i += 1
+        
+    await ctx.send(finalteams)
+
+
 
 
 """
@@ -177,6 +227,14 @@ glenoku(ctx) is  exactly what you think it is
 async def glenoku(ctx):
     await ctx.send('https://www.youtube.com/watch?v=D7c7ywgWnAY')
 
+
+
+"""
+glenoku2(ctx) is a hidden comma
+"""
+@bot.command()
+async def glenoku2(ctx):
+    await ctx.send('In the works')
 
 """
 timer(ctx,time) is takes in time in units of minutes
@@ -310,4 +368,4 @@ async def timer(ctx,numero: float):
 
 # client = MyClient()
 # client.run('NjM2NDQxOTc4NDY4NDMzOTMy.Xa_wxw.1QDSkqZzeyNiob_JXhTOG0oL8Ac')
-bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbJkQA.--caTnUq71sqlQCod3IvEEZ2wsE')
+bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbJ9Cg.5kwTvwL_9pe8OrSkaKom6OoCgRw')
