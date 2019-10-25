@@ -134,6 +134,11 @@ async def maketeams(ctx, n,*args):
     acc = []
     for v in args:
         acc.append(v)
+#
+    if int(n) <= 0 or len(acc) < int(n):
+        await ctx.send("Not enough slots")
+        return
+
     random.shuffle(acc)
     teams = chunkIt(acc, n)
     i=1
