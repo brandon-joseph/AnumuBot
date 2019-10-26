@@ -6,7 +6,8 @@ import strawpoll
 from cv2 import cv2
 import numpy as np
 import time
-
+import praw
+import requests
 
 bot = commands.Bot(command_prefix='!')
 globlist = []
@@ -32,6 +33,24 @@ def prettylist(lst):
     for b in lst[:-1]:
         acc = acc + str(b) + ", "
     return acc + str(lst[-1])
+
+
+
+#reddit initialize
+reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
+                     client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
+                     password='2K04uNpgBJG9',
+                     user_agent='Anumubot by /u/Rayzor324',
+                     username='AnumuBot')
+reddit.read_only = True
+
+
+def getPosts(sub,n):
+    main = []
+    for submission in reddit.subreddit(sub).top(time_filter='day',limit=n):
+        main += [[submission.title,submission.url]]
+    return main
+
 
 
 
@@ -77,6 +96,8 @@ async def helpme(ctx,arg):
         !glenoku is exactly what you think it is 
         !timer time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
         !maketeams: Divides list into random teams of size n 
+        !joined prints when the user first joined the server.
+        !getreddit gets top n posts of given subreddit
         For specific syntax do !helpme <command>
         """)
     elif arg == "whatgame":
@@ -111,7 +132,14 @@ async def helpme(ctx,arg):
         await ctx.send("""
         !maketeams n <elt1, elt2, elt3,...> |  Divides list into random teams of size n 
         """)
-
+    elif arg == "joined":
+        await ctx.send("""
+        !joined @<Name>| Prints when user first joined the server
+        """)
+    elif arg == "getreddit":
+        await ctx.send("""
+        !getreddit <subreddit> <number of posts>| gets top n posts of given subreddit
+        """)
 
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
@@ -254,4 +282,71 @@ async def timer(ctx,numero: float):
     await ctx.send(str(numero) + ' minutes have passed.')
     
 
-bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbJ9Cg.5kwTvwL_9pe8OrSkaKom6OoCgRw')
+"""
+redditcheck(ctx) checks if reddit is working
+"""
+@bot.command()
+async def redditcheck(ctx):
+    print(reddit.user.me())
+    await ctx.send(reddit.user.me())
+
+"""
+getreddit(ctx,sub,n) gets top n posts of subreddit
+"""
+@bot.command()
+async def getreddit(ctx,sub,n):
+    main = getPosts(sub,int(n))
+    for submis in main:
+        await ctx.send(submis[0] + '\n' + submis[1] + '\n')
+
+  
+
+
+# """
+# redditcheck(ctx) checks if reddit is working
+# """
+# @bot.command()
+# async def redditcheck(ctx):
+#     print(reddit.user.me())
+#     await ctx.send(reddit.user.me())
+
+
+
+
+
+
+
+@bot.command()
+async def join(ctx):
+    channel = ctx.author.voice.channel
+    await channel.connect()
+@bot.command()
+async def leave(ctx):
+    await ctx.voice_client.disconnect()
+
+@bot.command(pass_context=True)
+async def yt(ctx,url):
+    voice_channel = ctx.author.voice.channel
+    voice_client = await voice_channel.connect()
+
+
+    player = await voice_client.create_ytdl_player(url)
+    player.start()
+
+
+
+
+
+
+
+"""
+joined(ctx,member) prints when user first joined the server.
+"""
+@bot.command()
+async def joined(ctx, *, member: discord.Member):
+    await ctx.send('{0} joined on {0.joined_at}'.format(member))
+
+
+
+
+bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbNRZw.fUhKjBJWfoOdX7KEzvlwyjfEECc')
