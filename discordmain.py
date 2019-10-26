@@ -11,6 +11,7 @@ import requests
 import json
 import urllib.request
 import youtube_dl
+import textwrap
 
 ######YOUTUBE
 # Suppress noise about console usage from errors
@@ -199,9 +200,9 @@ help(ctx) provides a list of all commands except the hidden ones lol
 @bot.command()
 async def helpme(ctx,arg=""):
     if arg == "":
-        await ctx.send("""
-        ***
-        !whatgame: takes in a list of games then randomly picks one and returns it 
+        await ctx.send(textwrap.dedent("""
+        
+        >>> **!whatgame: takes in a list of games then randomly picks one and returns it 
         !again:  rerolls the previous whatgame operation 
         !coin:  flips a coin. 
         !goldmine:  leads you to the city of gold 
@@ -213,11 +214,12 @@ async def helpme(ctx,arg=""):
         !joined prints when the user first joined the server.
         !getreddit gets top n posts of given subreddit
         !poll: creates a strawpoll
-        !yt: Plays a youtube video | !stream,!volume,!stop,!play,!join all supported
-        !firstmsg gets date of first message and gives clickable link***
+        !yt: Plays a youtube video | !volume,!stop,!play,!join all supported
+        !stream: Same as yt but doesn't predownload 
+        !firstmsg gets date of first message and gives clickable link!**
 
         For specific syntax do !helpme <command>
-        """)
+        """))
     elif arg == "whatgame":
         await ctx.send("""
         !whatgame <elt1, elt2, elt3,...> | Chooses one of elts
