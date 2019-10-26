@@ -8,6 +8,8 @@ import numpy as np
 import time
 import praw
 import requests
+import json
+import urllib.request
 
 bot = commands.Bot(command_prefix='!')
 globlist = []
@@ -98,6 +100,7 @@ async def helpme(ctx,arg):
         !maketeams: Divides list into random teams of size n 
         !joined prints when the user first joined the server.
         !getreddit gets top n posts of given subreddit
+        !poll: creates a strawpoll
         For specific syntax do !helpme <command>
         """)
     elif arg == "whatgame":
@@ -140,7 +143,10 @@ async def helpme(ctx,arg):
         await ctx.send("""
         !getreddit <subreddit> <number of posts>| gets top n posts of given subreddit
         """)
-
+    elif arg == "poll":
+        await ctx.send("""
+        !poll <title> <elt1, elt2, elt3,...> | Create a strawpoll with a title, and arguments
+        """)
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
 """
@@ -333,11 +339,24 @@ async def yt(ctx,url):
     player = await voice_client.create_ytdl_player(url)
     player.start()
 
+@bot.command()
+async def poll(ctx, name, *args):
+    acc = []
+    for v in args:
+        acc.append(v)
 
+    polley = {
+        "title": name,
+        "options": acc,
+        "multi": True
+    }
 
+    body = json.dumps(polley)
+    myurl = "https://www.strawpoll.me/api/v2/polls"
+    r = requests.post(url = myurl, data = body)
 
-
-
+    dic = r.json()
+    await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
 
 """
 joined(ctx,member) prints when user first joined the server.
