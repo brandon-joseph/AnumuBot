@@ -193,34 +193,15 @@ async def on_ready():
     print('Logged in as:')
     print(bot.user.name)
 
-# async def on_message(self, message):
-#     # don't respond to ourselves
-#     if message.author == self.user:
-#         return
-
-#     if message.content == 'ping':
-#         await message.channel.send('pong')
-# @bot.event
-# async def on_message(self,message):
-#     if message.content.startswith('$amumu'):
-#         channel = message.channel
-#         await channel.send('Hi, wanna be friends!')
-
-#         def check(m):
-#             return m.content == 'hello' and m.channel == channel
-
-#         msg = await client.wait_for('message', check=check)
-#         await channel.send('Hello {.author}!'.format(msg))
-
-
-
 """
 help(ctx) provides a list of all commands except the hidden ones lol
 """
 @bot.command()
-async def helpme(ctx,arg):
+async def helpme(ctx,arg=""):
     if arg == "":
-        await ctx.send("""!whatgame: takes in a list of games then randomly picks one and returns it 
+        await ctx.send("""
+        ***
+        !whatgame: takes in a list of games then randomly picks one and returns it 
         !again:  rerolls the previous whatgame operation 
         !coin:  flips a coin. 
         !goldmine:  leads you to the city of gold 
@@ -233,19 +214,21 @@ async def helpme(ctx,arg):
         !getreddit gets top n posts of given subreddit
         !poll: creates a strawpoll
         !yt: Plays a youtube video | !stream,!volume,!stop,!play,!join all supported
+        !firstmsg gets date of first message and gives clickable link***
+
         For specific syntax do !helpme <command>
         """)
     elif arg == "whatgame":
         await ctx.send("""
-        !whatgame <elt1, elt2, elt3,...>
+        !whatgame <elt1, elt2, elt3,...> | Chooses one of elts
         """)
     elif arg == "again":
         await ctx.send("""
-        !again | No parameters taken
+        !again | No parameters taken | Replays whatgame round
         """)
     elif arg == "coin":
         await ctx.send("""
-        !coin | No parameters taken
+        !coin | No parameters taken |Heads or Tails
         """)
     elif arg == "goldmine":
         await ctx.send("""
@@ -282,6 +265,10 @@ async def helpme(ctx,arg):
     elif arg == "yt":
         await ctx.send("""
         !yt <url> | Plays youtube video audio
+        """)
+    elif arg == "firstmsg":
+        await ctx.send("""
+        !firstmsg | No parameters taken, channel based
         """)
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
@@ -476,12 +463,27 @@ async def poll(ctx, name, *args):
     dic = r.json()
     await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
 
+
+
+####Fun Server Features
 """
 joined(ctx,member) prints when user first joined the server.
 """
 @bot.command()
 async def joined(ctx, *, member: discord.Member):
     await ctx.send('{0} joined on {0.joined_at}'.format(member))
+
+"""
+firstmsg(ctx) gets date of first message sent in chat
+"""
+@bot.command()
+async def firstmsg(ctx):
+    channel = ctx.message.channel
+    async for x in channel.history(limit=1,oldest_first=True):
+        msg = x
+        tim = x.created_at
+    await ctx.send(tim)
+    await ctx.send(msg.jump_url)  
 
 
 

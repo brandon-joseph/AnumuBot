@@ -114,5 +114,25 @@
 #     #cv2.imwrite('C:/Temp/person-masked.jpg', masked)      
 
 
+# async def on_message(self, message):
+#     # don't respond to ourselves
+#     if message.author == self.user:
+#         return
+
+#     if message.content == 'ping':
+#         await message.channel.send('pong')
+# @bot.event
+# async def on_message(self,message):
+#     if message.content.startswith('$amumu'):
+#         channel = message.channel
+#         await channel.send('Hi, wanna be friends!')
+
+#         def check(m):
+#             return m.content == 'hello' and m.channel == channel
+
+#         msg = await client.wait_for('message', check=check)
+#         await channel.send('Hello {.author}!'.format(msg))
+
+
 # client = MyClient()
 # client.run('NjM2NDQxOTc4NDY4NDMzOTMy.Xa_wxw.1QDSkqZzeyNiob_JXhTOG0oL8Ac')
