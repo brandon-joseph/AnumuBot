@@ -182,7 +182,10 @@ reddit.read_only = True
 def getPosts(sub,n):
     main = []
     for submission in reddit.subreddit(sub).top(time_filter='day',limit=n):
-        main += [[submission.title,submission.url]]
+        if submission.is_self:
+            main += [[submission.title,submission.selftext]]
+        else:
+            main += [[submission.title,submission.url]]
     return main
 
 
@@ -428,7 +431,7 @@ getreddit(ctx,sub,n) gets top n posts of subreddit
 async def getreddit(ctx,sub,n):
     main = getPosts(sub,int(n))
     for submis in main:
-        await ctx.send(submis[0] + '\n' + submis[1] + '\n')
+        await ctx.send(submis[0] + '\n' + submis[1] + '\n\n') 
 
   
 
@@ -491,4 +494,4 @@ async def firstmsg(ctx):
 
 
 bot.add_cog(Music(bot))
-bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbNRZw.fUhKjBJWfoOdX7KEzvlwyjfEECc')
+bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbPl4A.LdEuqKk8YLlNMJBWoRSxqk4rGl0')

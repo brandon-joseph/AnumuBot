@@ -23,11 +23,12 @@ def getPosts(sub,n):
     main = []
     for submission in reddit.subreddit(sub).top(time_filter='day',limit=n):
         main += [[submission.title,submission.url]]
+        print(submission.is_self)
 
     for submis in main:
          print(submis[0] + '\n' + submis[1] + '\n')
 
-getPosts('shitpostcrusaders',5)
+getPosts('darkjokes',5)
 # for post in posts:
 #     url = (post.url)
 #     file_name = url.split("/")
