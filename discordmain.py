@@ -206,20 +206,23 @@ async def helpme(ctx,arg=""):
         await ctx.send(textwrap.dedent("""
         
         >>> **!whatgame: takes in a list of games then randomly picks one and returns it 
-        !again:  rerolls the previous whatgame operation 
-        !coin:  flips a coin. 
+        !again: rerolls the previous whatgame operation 
+        !coin: flips a coin. 
         !goldmine:  leads you to the city of gold 
         !bl3 : is a function that @'s all owners of Borderlands 3 that I remembered to add
-        !headshot provides a headshot of the great god's face 
-        !glenoku is exactly what you think it is 
-        !timer time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
+        !animegang: notifies weebs
+        !headshot: provides a headshot of the great god's face 
+        !glenoku: is exactly what you think it is 
+        !timer: time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
         !maketeams: Divides list into random teams of size n 
-        !joined prints when the user first joined the server.
-        !getreddit gets top n posts of given subreddit
+        !joined: prints when the user first joined the server.
+        !getreddit: gets top n posts of given subreddit
         !poll: creates a strawpoll
         !yt: Plays a youtube video | !volume,!stop,!play,!join all supported
         !stream: Same as yt but doesn't predownload 
-        !firstmsg gets date of first message and gives clickable link!**
+        !firstmsg: gets date of first message and gives clickable link!
+        !whatanime: gets name of anime and episode from gif or image**
+
 
         For specific syntax do !helpme <command>
         """))
@@ -242,6 +245,10 @@ async def helpme(ctx,arg=""):
     elif arg == "bl3":
         await ctx.send("""
         !bl3 | No parameters taken
+        """)
+    elif arg == "animegang":
+        await ctx.send("""
+        !animegang | No parameters taken
         """)
     elif arg == "glenoku":
         await ctx.send("""
@@ -274,6 +281,10 @@ async def helpme(ctx,arg=""):
     elif arg == "firstmsg":
         await ctx.send("""
         !firstmsg | No parameters taken, channel based
+        """)
+    elif arg == "whatanime":
+        await ctx.send("""
+        !whatanime <url.jpg/png> | Gives information on what anime picture is from
         """)
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
@@ -362,6 +373,14 @@ bl3(ctx) is a function that @'s all owners of Borderlands 3
 @bot.command()
 async def bl3(ctx):
     await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
+
+"""
+animegang(ctx) is a function that @'s all owners of Borderlands 3
+"""
+@bot.command()
+async def animegang(ctx):
+    await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
+
 
 
 
@@ -467,6 +486,40 @@ async def poll(ctx, name, *args):
 
     dic = r.json()
     await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
+
+
+
+
+"""
+whatanime(ctx, url) finds name of anime using trace.moe API
+"""
+@bot.command()
+async def whatanime(ctx, url):
+
+    # payload = { "image" : "'$(base64 -w 0 " + url + ")'" }
+    # headers = {"Content-Type": "application/json"}
+    # r = requests.post("https://trace.moe/api/search", data=payload, headers=headers)
+
+    r = requests.get("https://trace.moe/api/search?url="+url)
+
+    # jsonform = json.loads(dic.data)
+
+    result = r.json()
+    docs = (result['docs'])[0]
+    title = docs['title_english']
+    mal_id = docs['mal_id']
+    mal = "https://myanimelist.net/anime/" + str(mal_id)
+    ep = docs['episode']
+    sim = docs["similarity"]
+    await ctx.send("""Title: {title}
+    Episode: {ep}
+    Similarity: {similarity}
+    Mal:  {mal}""".format(title=title,ep = ep,similarity=sim,mal=mal))
+
+
+
+
+
 
 
 
