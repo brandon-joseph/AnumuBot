@@ -12,6 +12,8 @@ import json
 import urllib.request
 import youtube_dl
 import textwrap
+import requests.exceptions
+from bs4 import BeautifulSoup
 
 ######YOUTUBE
 # Suppress noise about console usage from errors
@@ -37,6 +39,7 @@ ffmpeg_options = {
 }
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
+
 
 
 class YTDLSource(discord.PCMVolumeTransformer):
@@ -93,6 +96,8 @@ class Music(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
+
+
     @commands.command()
     async def stream(self, ctx, *, url):
         """Streams from a url (same as yt, but doesn't predownload)"""
@@ -102,6 +107,25 @@ class Music(commands.Cog):
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(player.title))
+
+    @commands.command()
+    async def ytsearch(self, ctx, *, url):
+        textToSearch = url
+        query = urllib.parse.quote(textToSearch)
+        url = "https://www.youtube.com/results?search_query=" + query
+        response = urllib.request.urlopen(url)
+        html = response.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        for vid in soup.findAll(attrs={'class':'yt-uix-tile-link'}):
+            url = 'https://www.youtube.com' + vid['href']
+            break
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=bot.loop, stream=True)
+            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+
+        await ctx.send('Now playing: {}'.format(player.title))
+
+
 
     @commands.command()
     async def volume(self, ctx, volume: int):
@@ -122,6 +146,7 @@ class Music(commands.Cog):
     @play.before_invoke
     @yt.before_invoke
     @stream.before_invoke
+    @ytsearch.before_invoke
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
             if ctx.author.voice:
@@ -210,7 +235,7 @@ async def helpme(ctx,arg=""):
         !coin: flips a coin. 
         !goldmine:  leads you to the city of gold 
         !bl3 : is a function that @'s all owners of Borderlands 3 that I remembered to add
-        !animegang: notifies weebs
+        !weebs: notifies weebs
         !headshot: provides a headshot of the great god's face 
         !glenoku: is exactly what you think it is 
         !timer: time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
@@ -219,9 +244,11 @@ async def helpme(ctx,arg=""):
         !getreddit: gets top n posts of given subreddit
         !poll: creates a strawpoll
         !yt: Plays a youtube video | !volume,!stop,!play,!join all supported
-        !stream: Same as yt but doesn't predownload 
+        !ytsearch: Searches and plays top rated youtube video 
+        !stream: Same as yt but doesn't predownload so prolly should use this
         !firstmsg: gets date of first message and gives clickable link!
-        !whatanime: gets name of anime and episode from gif or image**
+        !whatanime: gets name of anime and episode from gif or image
+        !opgg: gets an accounts op.gg**
 
 
         For specific syntax do !helpme <command>
@@ -246,7 +273,7 @@ async def helpme(ctx,arg=""):
         await ctx.send("""
         !bl3 | No parameters taken
         """)
-    elif arg == "animegang":
+    elif arg == "weebs":
         await ctx.send("""
         !animegang | No parameters taken
         """)
@@ -278,6 +305,10 @@ async def helpme(ctx,arg=""):
         await ctx.send("""
         !yt <url> | Plays youtube video audio
         """)
+    elif arg == "ytsearch":
+        await ctx.send("""
+        !ytsearch <name>| Plays youtube video audio
+        """)
     elif arg == "firstmsg":
         await ctx.send("""
         !firstmsg | No parameters taken, channel based
@@ -285,6 +316,12 @@ async def helpme(ctx,arg=""):
     elif arg == "whatanime":
         await ctx.send("""
         !whatanime <url.jpg/png> | Gives information on what anime picture is from
+        """)
+    elif arg == "opgg":
+        await ctx.send("""
+        !opgg <username> | Grabs op.gg of user, put "" around name if there are spaces
+        Can also do different regions by giving a second arg
+        kr,euw,etc
         """)
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
@@ -375,10 +412,10 @@ async def bl3(ctx):
     await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
 
 """
-animegang(ctx) is a function that @'s all owners of Borderlands 3
+animegang(ctx) is a function that @'s weebs
 """
 @bot.command()
-async def animegang(ctx):
+async def weebs(ctx):
     await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
 
 
@@ -492,32 +529,47 @@ async def poll(ctx, name, *args):
 
 """
 whatanime(ctx, url) finds name of anime using trace.moe API
+https://soruly.github.io/trace.moe/#/
 """
 @bot.command()
 async def whatanime(ctx, url):
 
-    # payload = { "image" : "'$(base64 -w 0 " + url + ")'" }
-    # headers = {"Content-Type": "application/json"}
-    # r = requests.post("https://trace.moe/api/search", data=payload, headers=headers)
+    try:
+        r = requests.get("https://trace.moe/api/search?url="+url)
+        r.raise_for_status() 
+    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+        await ctx.send("Server down")
+    except requests.exceptions.HTTPError:
+        await ctx.send("4xx, 5xx error")
+    else:
+        result = r.json()
+        docs = (result['docs'])[0]
+        title = docs['title_english']
+        mal_id = docs['mal_id']
+        mal = "https://myanimelist.net/anime/" + str(mal_id)
+        ep = docs['episode']
+        sim = docs["similarity"]
+        await ctx.send("""Title: {title}
+        Episode: {ep}
+        Similarity: {similarity}
+        Mal:  {mal}""".format(title=title,ep = ep,similarity=sim,mal=mal))
 
-    r = requests.get("https://trace.moe/api/search?url="+url)
-
-    # jsonform = json.loads(dic.data)
-
-    result = r.json()
-    docs = (result['docs'])[0]
-    title = docs['title_english']
-    mal_id = docs['mal_id']
-    mal = "https://myanimelist.net/anime/" + str(mal_id)
-    ep = docs['episode']
-    sim = docs["similarity"]
-    await ctx.send("""Title: {title}
-    Episode: {ep}
-    Similarity: {similarity}
-    Mal:  {mal}""".format(title=title,ep = ep,similarity=sim,mal=mal))
 
 
-
+#######LEAGUE BLOCK
+"""
+opgg(ctx,name) gets name's op.gg, assuming they're on NA
+"""
+@bot.command()
+async def opgg(ctx, name,region="na"):
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://"+region+".op.gg/summoner/userName="+ newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        await ctx.send("https://"+region+".op.gg/summoner/userName=" + newstring)
+    
 
 
 
@@ -542,6 +594,11 @@ async def firstmsg(ctx):
         tim = x.created_at
     await ctx.send(tim)
     await ctx.send(msg.jump_url)  
+
+
+
+
+
 
 
 
