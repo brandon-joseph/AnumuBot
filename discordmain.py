@@ -177,6 +177,7 @@ class Music(commands.Cog):
         clip = mp.VideoFileClip(latest_file)
         clip.write_videofile("movie_resized.mp4",bitrate="200k")
 
+        await ctx.send("Title: " + submission.title)
         await ctx.send(file=discord.File("movie_resized.mp4"))
 
 
