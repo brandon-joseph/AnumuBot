@@ -23,6 +23,15 @@ import glob
 import os
 
 
+# reddit initialize
+reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
+                     client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
+                     password='2K04uNpgBJG9',
+                     user_agent='Anumubot by /u/Rayzor324',
+                     username='AnumuBot')
+reddit.read_only = True
+
+
 ######YOUTUBE
 # Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
@@ -150,6 +159,28 @@ class Music(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
+    """
+    redv(ctx,post) gets reddit video from post
+    """
+    @commands.command()
+    async def redv(self, ctx, *, url):
+        post_id = reddit.submission(url=url)
+        submission = reddit.submission(id=post_id)
+        url = submission.url
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+
+        files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
+        latest_file = max(files, key=os.path.getctime)
+        print(latest_file)
+
+        clip = mp.VideoFileClip(latest_file)
+        clip.write_videofile("movie_resized.mp4",bitrate="200k")
+
+        await ctx.send(file=discord.File("movie_resized.mp4"))
+
+
+
     @commands.command()
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
@@ -214,15 +245,6 @@ def prettylist(lst):
     return acc + str(lst[-1])
 
 
-# reddit initialize
-reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
-                     client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
-                     password='2K04uNpgBJG9',
-                     user_agent='Anumubot by /u/Rayzor324',
-                     username='AnumuBot')
-reddit.read_only = True
-
-
 def getPosts(sub, n):
     main = []
     for submission in reddit.subreddit(sub).top(time_filter='day', limit=n):
@@ -270,6 +292,7 @@ async def helpme(ctx, arg=""):
         !whatanime: gets name of anime and episode from gif or image
         !opgg: gets an accounts op.gg**
         !twit: gets video of twitter post and sends it to channel
+        !redv: gets reddit video from post
 
 
         For specific syntax do !helpme <command>
@@ -349,6 +372,11 @@ async def helpme(ctx, arg=""):
         !twit <url of post> | the url just has to be a twitter post
         This thing took so damn long to implement I should've just given up earlier
         damn twitter.
+        """)
+    elif arg == "redv":
+        await ctx.send("""
+        !redv <url of post> | the url is just any reddit post that has a v.reddit link
+        screw this thing too
         """)
 
 """
@@ -543,15 +571,13 @@ async def redditcheck(ctx):
 """
 getreddit(ctx,sub,n) gets top n posts of subreddit
 """
-
-
 @bot.command()
 async def getreddit(ctx, sub, n):
     main = getPosts(sub, int(n))
     for submis in main:
         await ctx.send(submis[0] + '\n' + submis[1] + '\n\n')
 
-    # """
+
 
 
 # redditcheck(ctx) checks if reddit is working
