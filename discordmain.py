@@ -279,7 +279,7 @@ async def helpme(ctx, arg=""):
         !firstmsg: gets date of first message and gives clickable link!
         !whatanime: gets name of anime and episode from gif or image
         !opgg: gets an accounts op.gg
-        !twit: gets video of twitter post and sends it to channel
+        !twit: gets video of twitter post and sends it to channel, also works on twitch clips, prolly more
         !redv: gets reddit video from post**
 
 
