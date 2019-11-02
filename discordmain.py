@@ -296,9 +296,9 @@ async def helpme(ctx, arg=""):
         !stream: Same as yt but doesn't predownload so prolly should use this
         !firstmsg: gets date of first message and gives clickable link!
         !whatanime: gets name of anime and episode from gif or image
-        !opgg: gets an accounts op.gg**
+        !opgg: gets an accounts op.gg
         !twit: gets video of twitter post and sends it to channel
-        !redv: gets reddit video from post
+        !redv: gets reddit video from post**
 
 
         For specific syntax do !helpme <command>
@@ -370,8 +370,8 @@ async def helpme(ctx, arg=""):
     elif arg == "opgg":
         await ctx.send("""
         !opgg <username> | Grabs op.gg of user, put "" around name if there are spaces
-        Can also do different regions by giving a second arg
-        kr,euw,etc
+        Can also do different regions by giving a second arg if you use the command !Ropgg
+        kr,euw,etc 
         """)
     elif arg == "twot":
         await ctx.send("""
