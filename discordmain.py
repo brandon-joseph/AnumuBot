@@ -21,16 +21,15 @@ import moviepy.editor as mp
 
 import glob
 import os
-
+import config
 
 # reddit initialize
-reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
-                     client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
-                     password='2K04uNpgBJG9',
+reddit = praw.Reddit(client_id=config.config["redditClientID"],
+                     client_secret=config.config['redditClientSecret'],
+                     password=config.config["redditPass"],
                      user_agent='Anumubot by /u/Rayzor324',
                      username='AnumuBot')
 reddit.read_only = True
-
 
 ######YOUTUBE
 # Suppress noise about console usage from errors
@@ -121,30 +120,23 @@ class Music(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays from a url (almost anything youtube_dl supports)"""
 
-
         await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
-
-
 
         files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
         clip = mp.VideoFileClip(latest_file)
-        #clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
-        clip.write_videofile("movie_resized.mp4",bitrate="200k")
+        # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+        clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
         await ctx.send(file=discord.File("movie_resized.mp4"))
-
-
-
 
     @commands.command()
     async def ytsearch(self, ctx, *, url):
@@ -166,6 +158,7 @@ class Music(commands.Cog):
     """
     redv(ctx,post) gets reddit video from post
     """
+
     @commands.command()
     async def redv(self, ctx, *, url):
         post_id = reddit.submission(url=url)
@@ -180,12 +173,10 @@ class Music(commands.Cog):
         print(latest_file)
 
         clip = mp.VideoFileClip(latest_file)
-        clip.write_videofile("movie_resized.mp4",bitrate="200k")
+        clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
         await ctx.send("Title: " + submission.title)
         await ctx.send(file=discord.File("movie_resized.mp4"))
-
-
 
     @commands.command()
     async def volume(self, ctx, volume: int):
@@ -385,6 +376,7 @@ async def helpme(ctx, arg=""):
         screw this thing too
         """)
 
+
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
 """
@@ -577,13 +569,13 @@ async def redditcheck(ctx):
 """
 getreddit(ctx,sub,n) gets top n posts of subreddit
 """
+
+
 @bot.command()
 async def getreddit(ctx, sub, n):
     main = getPosts(sub, int(n))
     for submis in main:
         await ctx.send(submis[0] + '\n' + submis[1] + '\n\n')
-
-
 
 
 # redditcheck(ctx) checks if reddit is working
@@ -656,9 +648,13 @@ def listToString(list):
         main += item + " "
     main = main.strip()
     return main
+
+
 """
 opgg(ctx,name) gets name's op.gg, assuming they're on NA
 """
+
+
 @bot.command()
 async def opgg(ctx, *args):
     name = listToString(args)
@@ -670,9 +666,12 @@ async def opgg(ctx, *args):
     else:
         await ctx.send("https://na.op.gg/summoner/userName=" + newstring)
 
+
 """
 Ropgg(ctx,name) gets name's op.gg, has region support
 """
+
+
 @bot.command()
 async def Ropgg(ctx, name, region="na"):
     newstring = (str(name)).replace(" ", "+")
@@ -683,16 +682,17 @@ async def Ropgg(ctx, name, region="na"):
     else:
         await ctx.send("https://" + region + ".op.gg/summoner/userName=" + newstring)
 
+
 ######LEAGUE BLCOK
 
 
 # TWITTER BLOCK
-api = twitter.Api("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
-                 "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
-                 "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+api = twitter.Api(config.config["twitConsKey"],
+                  config.config["twitConsSecret"],
+                  config.config["twitAccessKey"],
+                  config.config["twitAccessSecret"])
 
 # api = tweepy.API(auth)
-
 
 
 ####Fun Server Features
@@ -722,4 +722,4 @@ async def firstmsg(ctx):
 
 
 bot.add_cog(Music(bot))
-bot.run('NjM2NDQxOTc4NDY4NDMzOTMy.XbPl4A.LdEuqKk8YLlNMJBWoRSxqk4rGl0')
+bot.run(config.config["discordKey"])
