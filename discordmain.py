@@ -14,11 +14,18 @@ import youtube_dl
 import textwrap
 import requests.exceptions
 from bs4 import BeautifulSoup
+import tweepy
+
+import twitter
+import moviepy.editor as mp
+
+import glob
+import os
+
 
 ######YOUTUBE
 # Suppress noise about console usage from errors
 youtube_dl.utils.bug_reports_message = lambda: ''
-
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
@@ -31,7 +38,7 @@ ytdl_format_options = {
     'quiet': True,
     'no_warnings': True,
     'default_search': 'auto',
-    'source_address': '0.0.0.0' # bind to ipv4 since ipv6 addresses cause issues sometimes
+    'source_address': '0.0.0.0'  # bind to ipv4 since ipv6 addresses cause issues sometimes
 }
 
 ffmpeg_options = {
@@ -39,7 +46,6 @@ ffmpeg_options = {
 }
 
 ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
-
 
 
 class YTDLSource(discord.PCMVolumeTransformer):
@@ -96,8 +102,6 @@ class Music(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-
-
     @commands.command()
     async def stream(self, ctx, *, url):
         """Streams from a url (same as yt, but doesn't predownload)"""
@@ -108,6 +112,27 @@ class Music(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
+
+    @commands.command()
+    async def twit(self, ctx, *, url):
+        """Plays from a url (almost anything youtube_dl supports)"""
+
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+
+        files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
+        latest_file = max(files, key=os.path.getctime)
+        print(latest_file)
+
+        clip = mp.VideoFileClip(latest_file)
+        clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+        clip_resized.write_videofile("movie_resized.mp4",bitrate="160k")
+
+        await ctx.send(file=discord.File("movie_resized.mp4"))
+
+
+
+
     @commands.command()
     async def ytsearch(self, ctx, *, url):
         textToSearch = url
@@ -116,7 +141,7 @@ class Music(commands.Cog):
         response = urllib.request.urlopen(url)
         html = response.read()
         soup = BeautifulSoup(html, 'html.parser')
-        for vid in soup.findAll(attrs={'class':'yt-uix-tile-link'}):
+        for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
             url = 'https://www.youtube.com' + vid['href']
             break
         async with ctx.typing():
@@ -124,8 +149,6 @@ class Music(commands.Cog):
             ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(player.title))
-
-
 
     @commands.command()
     async def volume(self, ctx, volume: int):
@@ -161,20 +184,16 @@ class Music(commands.Cog):
 #####YOUTUBE
 
 
-
-
-
 bot = commands.Bot(command_prefix='!',
                    description='Anumu has many many many features, too many to list so I only listed some.')
 globlist = []
 
 
-
-
-def cmplist(list): #Actually this function calls from another function
+def cmplist(list):  # Actually this function calls from another function
     global globlist
     if (len(list) > len(globlist)):
-        globlist = list[:] #copy all element of list to globlist
+        globlist = list[:]  # copy all element of list to globlist
+
 
 def chunkIt(seq, num):
     avg = len(seq) / float(num)
@@ -187,6 +206,7 @@ def chunkIt(seq, num):
 
     return out
 
+
 def prettylist(lst):
     acc = ""
     for b in lst[:-1]:
@@ -194,8 +214,7 @@ def prettylist(lst):
     return acc + str(lst[-1])
 
 
-
-#reddit initialize
+# reddit initialize
 reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
                      client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
                      password='2K04uNpgBJG9',
@@ -204,16 +223,14 @@ reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
 reddit.read_only = True
 
 
-def getPosts(sub,n):
+def getPosts(sub, n):
     main = []
-    for submission in reddit.subreddit(sub).top(time_filter='day',limit=n):
+    for submission in reddit.subreddit(sub).top(time_filter='day', limit=n):
         if submission.is_self:
-            main += [[submission.title,submission.selftext]]
+            main += [[submission.title, submission.selftext]]
         else:
-            main += [[submission.title,submission.url]]
+            main += [[submission.title, submission.url]]
     return main
-
-
 
 
 # class MyClient(discord.Client):
@@ -222,11 +239,14 @@ async def on_ready():
     print('Logged in as:')
     print(bot.user.name)
 
+
 """
 help(ctx) provides a list of all commands except the hidden ones lol
 """
+
+
 @bot.command()
-async def helpme(ctx,arg=""):
+async def helpme(ctx, arg=""):
     if arg == "":
         await ctx.send(textwrap.dedent("""
         
@@ -238,7 +258,7 @@ async def helpme(ctx,arg=""):
         !weebs: notifies weebs
         !headshot: provides a headshot of the great god's face 
         !glenoku: is exactly what you think it is 
-        !timer: time is takes in time in units of minutes, in decimal form (i.e 10.0 instead of 10)
+        !timer: time is taken in time in units of minutes
         !maketeams: Divides list into random teams of size n 
         !joined: prints when the user first joined the server.
         !getreddit: gets top n posts of given subreddit
@@ -249,6 +269,7 @@ async def helpme(ctx,arg=""):
         !firstmsg: gets date of first message and gives clickable link!
         !whatanime: gets name of anime and episode from gif or image
         !opgg: gets an accounts op.gg**
+        !twit: gets video of twitter post and sends it to channel
 
 
         For specific syntax do !helpme <command>
@@ -283,11 +304,11 @@ async def helpme(ctx,arg=""):
         """)
     elif arg == "timer":
         await ctx.send("""
-        !timer time | time must be a decimal number, i.e. 5.0,12.0. It cannot be an integer, i.e 1 or 3.
+        !timer <time> | time must be a number in minutes
         """)
     elif arg == "maketeams":
         await ctx.send("""
-        !maketeams n <elt1, elt2, elt3,...> |  Divides list into random teams of size n 
+        !maketeams <n> <elt1, elt2, elt3,...> |  Divides list into random teams of size n 
         """)
     elif arg == "joined":
         await ctx.send("""
@@ -323,115 +344,145 @@ async def helpme(ctx,arg=""):
         Can also do different regions by giving a second arg
         kr,euw,etc
         """)
+    elif arg == "twot":
+        await ctx.send("""
+        !twit <url of post> | the url just has to be a twitter post
+        This thing took so damn long to implement I should've just given up earlier
+        damn twitter.
+        """)
+
 """
 whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
 """
+
+
 @bot.command()
 async def whatgame(ctx, *args):
     acc = []
     for v in args:
         acc.append(v)
     cmplist(acc)
-    game = random.choice(acc) 
+    game = random.choice(acc)
     await ctx.send('How about ' + game + '?')
 
 
 """
 maketeams(ctx,n,*args) divides people into teams of size n 
 """
+
+
 @bot.command()
-async def maketeams(ctx, n,*args):
+async def maketeams(ctx, n, *args):
     acc = []
     for v in args:
         acc.append(v)
-#
+    #
     if int(n) <= 0 or len(acc) < int(n):
         await ctx.send("Not enough slots")
         return
 
     random.shuffle(acc)
     teams = chunkIt(acc, n)
-    i=1
+    i = 1
     t = False
-    finalteams="Teams:" + '\n'
+    finalteams = "Teams:" + '\n'
     for team in teams:
         tem = prettylist(team)
-        if not(t): 
+        if not (t):
             finalteams += "Team " + str(i) + ": " + tem
             t = True
-            i+=1
+            i += 1
         else:
             finalteams += '\n' + "Team " + str(i) + ": " + tem
             i += 1
-        
+
     await ctx.send(finalteams)
-
-
 
 
 """
 again(ctx) rerolls the previous whatgame operation
 """
+
+
 @bot.command()
 async def again(ctx):
-    game = random.choice(globlist) 
+    game = random.choice(globlist)
     await ctx.send('Maybe ' + game + ' is better?')
 
 
 """
 coin(ctx) flips a coin.
 """
+
+
 @bot.command()
 async def coin(ctx):
-    acc = ["Heads","Tails"]
-    game = random.choice(acc) 
+    acc = ["Heads", "Tails"]
+    game = random.choice(acc)
     await ctx.send(game)
+
 
 """
 goldmine(ctx) is a hidden command that leads you to Eldorado
 """
+
+
 @bot.command()
 async def goldmine(ctx):
     await ctx.send('You\'ve found it ' + 'https://www.youtube.com/user/Rayzor324/videos?view_as=subscriber')
+
 
 """
 usual(ctx) is a deprecated function that performs whatgame(ctx,*args) on an already generated list, that should
 contain games frequented.
 """
+
+
 @bot.command()
 async def usual(ctx):
-    acc = ["Smite","League"]
-    game = random.choice(acc) 
+    acc = ["Smite", "League"]
+    game = random.choice(acc)
     await ctx.send('How about ' + game + '?')
+
 
 """
 bl3(ctx) is a function that @'s all owners of Borderlands 3
 """
+
+
 @bot.command()
 async def bl3(ctx):
-    await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
+    await ctx.send(
+        'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
+
 
 """
 animegang(ctx) is a function that @'s weebs
 """
+
+
 @bot.command()
 async def weebs(ctx):
-    await ctx.send('Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
-
-
+    await ctx.send(
+        'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
 
 
 """
 headshot(ctx) provides a headshot of the great god's face
 """
+
+
 @bot.command()
 async def headshot(ctx):
     channel = ctx.message.channel
     await channel.send(file=discord.File('AmumuSquare.png'))
 
+
 """
 on_message(Gohan) is a shitpost
 """
+
+
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)
@@ -446,53 +497,63 @@ async def on_message(message):
 """
 glenoku(ctx) is  exactly what you think it is
 """
+
+
 @bot.command()
 async def glenoku(ctx):
     await ctx.send('https://www.youtube.com/watch?v=D7c7ywgWnAY')
 
 
-
 """
 glenoku2(ctx) is a hidden comma
 """
+
+
 @bot.command()
 async def glenoku2(ctx):
     await ctx.send('In the works')
 
+
 """
 timer(ctx,time) is takes in time in units of minutes
 """
+
+
 @bot.command()
-async def timer(ctx,numero: float):
+async def timer(ctx, numero: float):
     await ctx.send("The timer has started")
     t_end = time.time() + 60 * numero
     while time.time() < t_end:
-       if t_end <= 0:
+        if t_end <= 0:
             break
     await ctx.send(str(numero) + ' minutes have passed.')
-    
+
 
 """
 redditcheck(ctx) checks if reddit is working
 """
+
+
 @bot.command()
 async def redditcheck(ctx):
     print(reddit.user.me())
     await ctx.send(reddit.user.me())
 
+
 """
 getreddit(ctx,sub,n) gets top n posts of subreddit
 """
+
+
 @bot.command()
-async def getreddit(ctx,sub,n):
-    main = getPosts(sub,int(n))
+async def getreddit(ctx, sub, n):
+    main = getPosts(sub, int(n))
     for submis in main:
-        await ctx.send(submis[0] + '\n' + submis[1] + '\n\n') 
+        await ctx.send(submis[0] + '\n' + submis[1] + '\n\n')
 
-  
+    # """
 
 
-# """
 # redditcheck(ctx) checks if reddit is working
 # """
 # @bot.command()
@@ -501,10 +562,11 @@ async def getreddit(ctx,sub,n):
 #     await ctx.send(reddit.user.me())
 
 
-
 """
 poll(ctx,name,args) creates poll
 """
+
+
 @bot.command()
 async def poll(ctx, name, *args):
     acc = []
@@ -519,24 +581,23 @@ async def poll(ctx, name, *args):
 
     body = json.dumps(polley)
     myurl = "https://www.strawpoll.me/api/v2/polls"
-    r = requests.post(url = myurl, data = body)
+    r = requests.post(url=myurl, data=body)
 
     dic = r.json()
     await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
-
-
 
 
 """
 whatanime(ctx, url) finds name of anime using trace.moe API
 https://soruly.github.io/trace.moe/#/
 """
+
+
 @bot.command()
 async def whatanime(ctx, url):
-
     try:
-        r = requests.get("https://trace.moe/api/search?url="+url)
-        r.raise_for_status() 
+        r = requests.get("https://trace.moe/api/search?url=" + url)
+        r.raise_for_status()
     except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
         await ctx.send("Server down")
     except requests.exceptions.HTTPError:
@@ -552,26 +613,42 @@ async def whatanime(ctx, url):
         await ctx.send("""Title: {title}
         Episode: {ep}
         Similarity: {similarity}
-        Mal:  {mal}""".format(title=title,ep = ep,similarity=sim,mal=mal))
-
+        Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
 
 
 #######LEAGUE BLOCK
 """
 opgg(ctx,name) gets name's op.gg, assuming they're on NA
 """
+
+
 @bot.command()
-async def opgg(ctx, name,region="na"):
+async def opgg(ctx, name, region="na"):
     newstring = (str(name)).replace(" ", "+")
-    url = "https://"+region+".op.gg/summoner/userName="+ newstring
+    url = "https://" + region + ".op.gg/summoner/userName=" + newstring
     r = requests.get(url)
     if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
         await ctx.send("User doesn't exist probably maybe")
     else:
-        await ctx.send("https://"+region+".op.gg/summoner/userName=" + newstring)
-    
+        await ctx.send("https://" + region + ".op.gg/summoner/userName=" + newstring)
 
 
+######LEAGUE BLCOK
+
+
+# TWITTER BLOCK
+# auth = tweepy.OAuthHandler("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd")
+# auth.set_access_token("133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
+#                       "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+
+# api = TwitterAPI("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
+#                  "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
+#                  "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+api = twitter.Api("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
+                 "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
+                 "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+
+# api = tweepy.API(auth)
 
 
 
@@ -579,28 +656,26 @@ async def opgg(ctx, name,region="na"):
 """
 joined(ctx,member) prints when user first joined the server.
 """
+
+
 @bot.command()
 async def joined(ctx, *, member: discord.Member):
     await ctx.send('{0} joined on {0.joined_at}'.format(member))
 
+
 """
 firstmsg(ctx) gets date of first message sent in chat
 """
+
+
 @bot.command()
 async def firstmsg(ctx):
     channel = ctx.message.channel
-    async for x in channel.history(limit=1,oldest_first=True):
+    async for x in channel.history(limit=1, oldest_first=True):
         msg = x
         tim = x.created_at
     await ctx.send(tim)
-    await ctx.send(msg.jump_url)  
-
-
-
-
-
-
-
+    await ctx.send(msg.jump_url)
 
 
 bot.add_cog(Music(bot))

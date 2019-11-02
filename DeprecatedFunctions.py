@@ -136,3 +136,89 @@
 
 # client = MyClient()
 # client.run('NjM2NDQxOTc4NDY4NDMzOTMy.Xa_wxw.1QDSkqZzeyNiob_JXhTOG0oL8Ac')
+
+@bot.command()
+async def twit(ctx, url):
+    #     last = url.rfind('/') + 1
+    #     tid = url[last:]
+    #     stat = api.get_status(tid, tweet_mode='extended')
+    #     if 'media' in stat.entities:
+    #         for image in  stat.entities['media']:
+    #            vid =  image['media_url']
+    #     #public_tweets = api.home_timeline()
+    #    # for tweet in public_tweets:
+    #      #   print(tweet)
+    #       #  break
+
+    #     print(stat)
+    br = mechanize.Browser()
+    br.open("https://twdownloader.net/")
+
+    #br.select_form(name='tweet')
+
+    for link in br.links():
+        print(link)
+
+    #br.form.find_control(id="tweet").__setattr__("value", url)
+    response = br.submit()  # submit current form
+    print(response.read())
+    await ctx.send("Done")
+
+
+
+# TWITTER BLOCK
+# auth = tweepy.OAuthHandler("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd")
+# auth.set_access_token("133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
+#                       "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+
+api = TwitterAPI("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
+                 "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
+                      "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
+
+
+#api = tweepy.API(auth)
+
+"""
+twit(ctx,name) test
+"""
+
+
+@bot.command()
+async def twit(ctx, url):
+        last = url.rfind('/') + 1
+        tid = url[last:]
+        stat = api.get_status(tid, tweet_mode='extended')
+        if 'media' in stat.entities:
+            for image in  stat.entities['media']:
+               vid =  image['media_url']
+        #public_tweets = api.home_timeline()
+       # for tweet in public_tweets:
+         #   print(tweet)
+          #  break
+
+
+# TWITTER BLOCK
+"""
+twit(ctx,name) test
+"""
+
+
+@bot.command()
+async def twit(ctx, url):
+    last = url.rfind('/') + 1
+    last2 = url.rfind('?')
+    tid = url[last:last2]
+    print("Tid: " + tid)
+    stat = api.GetStatus(tid)
+    twitter.twitter_utils.parse_media_file()
+    stat.AsDict()
+    print(stat)
+    # public_tweets = api.home_timeline()
+
+
+# for tweet in public_tweets:
+#   print(tweet)
+#  break
+
+
+# TWITTER BLOCK
