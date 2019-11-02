@@ -1,27 +1,9 @@
-import discord
-import random
+import discord, random, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
+    twitter, moviepy.editor as mp, os, config
 from discord.ext import commands
-import asyncio
-import strawpoll
-from cv2 import cv2
-import numpy as np
-import time
-import praw
-import requests
-import json
-import urllib.request
-import youtube_dl
-import textwrap
-import requests.exceptions
 from bs4 import BeautifulSoup
-import tweepy
-
-import twitter
-import moviepy.editor as mp
-
-import glob
-import os
-import config
+# import tweepy
+# import glob
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
