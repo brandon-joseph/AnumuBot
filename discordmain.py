@@ -126,16 +126,20 @@ class Music(commands.Cog):
     async def twit(self, ctx, *, url):
         """Plays from a url (almost anything youtube_dl supports)"""
 
+
+        await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
+
+
 
         files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
         clip = mp.VideoFileClip(latest_file)
-        clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
-        clip_resized.write_videofile("movie_resized.mp4",bitrate="160k")
+        #clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+        clip.write_videofile("movie_resized.mp4",bitrate="200k")
 
         await ctx.send(file=discord.File("movie_resized.mp4"))
 
@@ -167,6 +171,7 @@ class Music(commands.Cog):
         post_id = reddit.submission(url=url)
         submission = reddit.submission(id=post_id)
         url = submission.url
+        await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
 
@@ -644,13 +649,32 @@ async def whatanime(ctx, url):
 
 
 #######LEAGUE BLOCK
+
+def listToString(list):
+    main = ""
+    for item in list:
+        main += item + " "
+    main = main.strip()
+    return main
 """
 opgg(ctx,name) gets name's op.gg, assuming they're on NA
 """
-
-
 @bot.command()
-async def opgg(ctx, name, region="na"):
+async def opgg(ctx, *args):
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        await ctx.send("https://na.op.gg/summoner/userName=" + newstring)
+
+"""
+Ropgg(ctx,name) gets name's op.gg, has region support
+"""
+@bot.command()
+async def Ropgg(ctx, name, region="na"):
     newstring = (str(name)).replace(" ", "+")
     url = "https://" + region + ".op.gg/summoner/userName=" + newstring
     r = requests.get(url)
@@ -658,7 +682,6 @@ async def opgg(ctx, name, region="na"):
         await ctx.send("User doesn't exist probably maybe")
     else:
         await ctx.send("https://" + region + ".op.gg/summoner/userName=" + newstring)
-
 
 ######LEAGUE BLCOK
 
