@@ -286,7 +286,7 @@ async def helpme(ctx, arg=""):
         !weebs: notifies weebs
         !headshot: provides a headshot of the great god's face 
         !glenoku: is exactly what you think it is 
-        !timer: time is taken in time in units of minutes
+        !timer: time is taken in time in units of minutes | WARNING: Can't use other functions while timer runs
         !maketeams: Divides list into random teams of size n 
         !joined: prints when the user first joined the server.
         !getreddit: gets top n posts of given subreddit
@@ -687,13 +687,6 @@ async def Ropgg(ctx, name, region="na"):
 
 
 # TWITTER BLOCK
-# auth = tweepy.OAuthHandler("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd")
-# auth.set_access_token("133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
-#                       "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
-
-# api = TwitterAPI("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
-#                  "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
-#                  "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
 api = twitter.Api("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
                  "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
                  "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
