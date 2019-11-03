@@ -1,5 +1,5 @@
 import discordmain
-import praw
+import praw, twitter
 from discord.ext import commands
 import config
 
@@ -11,7 +11,15 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      username='AnumuBot')
 reddit.read_only = True
 
-class Redmu(commands.Cog):
+# TWITTER BLOCK
+api = twitter.Api(config.config["twitConsKey"],
+                  config.config["twitConsSecret"],
+                  config.config["twitAccessKey"],
+                  config.config["twitAccessSecret"])
+
+
+
+class web(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
     # """
@@ -47,6 +55,6 @@ def getPosts(sub, n):
 
 
 def setup(bot):
-    bot.add_cog(Redmu(bot))
+    bot.add_cog(web(bot))
 
 

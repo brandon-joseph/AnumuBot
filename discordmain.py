@@ -4,12 +4,12 @@ from discord.ext import commands
 from bs4 import BeautifulSoup
 # import tweepy
 # import glob
-import redmu
+import webApp
 import musicMu
-import  miscMu
+import miscMu
 
 import importlib
-importlib.reload(redmu)
+importlib.reload(webApp)
 importlib.reload(musicMu)
 importlib.reload(miscMu)
 
@@ -306,14 +306,6 @@ async def Ropgg(ctx, name, region="na"):
 ######LEAGUE BLCOK
 
 
-# TWITTER BLOCK
-api = twitter.Api(config.config["twitConsKey"],
-                  config.config["twitConsSecret"],
-                  config.config["twitAccessKey"],
-                  config.config["twitAccessSecret"])
-
-# api = tweepy.API(auth)
-
 
 ####Fun Server Features
 """
@@ -342,6 +334,6 @@ async def firstmsg(ctx):
 
 
 bot.add_cog(miscMu.Misc(bot))
-bot.add_cog(redmu.Redmu(bot))
+bot.add_cog(webApp.web(bot)) #Reddit
 bot.add_cog(musicMu.Music(bot))
 bot.run(config.config["discordKey"])
