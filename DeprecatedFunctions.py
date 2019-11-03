@@ -166,15 +166,6 @@ async def twit(ctx, url):
 
 
 
-# TWITTER BLOCK
-# auth = tweepy.OAuthHandler("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd")
-# auth.set_access_token("133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
-#                       "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
-
-api = TwitterAPI("0CtcKB78W6KHtzi9nEr3DZWZv", "rq8a3Pge0gjM5wBh4LtsVsEqrssYSEJ9Ed4X6RII3KBxaLnwEd",
-                 "133073551-t8uFMPnE7kkjcAJEvn1Aro4uasiWt9PBvIYEgAhU",
-                      "IGaiYenAhN7y213OhhYaiR3jm6XnAT3ysABf5Ep5s9070")
-
 
 #api = tweepy.API(auth)
 
