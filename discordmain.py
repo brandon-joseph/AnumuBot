@@ -109,17 +109,18 @@ class Music(commands.Cog):
         await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
-
-        files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
+        ext = [".mp4",".m4a"]
+        files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
-        clip = mp.VideoFileClip(latest_file)
+
         statinfo = os.stat(latest_file).st_size
         if (statinfo <= 8000000):
             await ctx.send(file=discord.File(latest_file))
             return
         # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+        clip = mp.VideoFileClip(latest_file)
         clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
         await ctx.send(file=discord.File("movie_resized.mp4"))
