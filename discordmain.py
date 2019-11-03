@@ -158,12 +158,12 @@ class Music(commands.Cog):
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
-        clip = mp.VideoFileClip(latest_file)
         statinfo = os.stat(latest_file).st_size
         if (statinfo <= 8000000):
             await ctx.send("Title: " + submission.title)
             await ctx.send(file=discord.File(latest_file))
             return
+        clip = mp.VideoFileClip(latest_file)
         clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
         await ctx.send("Title: " + submission.title)
