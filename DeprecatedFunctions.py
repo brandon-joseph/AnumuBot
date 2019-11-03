@@ -135,7 +135,6 @@
 
 
 # client = MyClient()
-# client.run('NjM2NDQxOTc4NDY4NDMzOTMy.Xa_wxw.1QDSkqZzeyNiob_JXhTOG0oL8Ac')
 
 @bot.command()
 async def twit(ctx, url):
@@ -227,14 +226,7 @@ import praw
 import requests
 
 
-
-
-reddit = praw.Reddit(client_id='5FvloSDXtBoP-Q',
-                     client_secret='v6xhOeAhVb4CJSkTe6sldNT8j5E',
-                     password='2K04uNpgBJG9',
-                     user_agent='Anumubot by /u/Rayzor324',
-                     username='AnumuBot')
-reddit.read_only = True
+gi
 
 def getPosts(sub,n):
     main = []
