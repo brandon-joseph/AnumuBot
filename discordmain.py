@@ -153,8 +153,8 @@ class Music(commands.Cog):
         await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
-
-        files = [x for x in os.listdir('/Users/brandonjoseph/Documents/Various Test/Anumu Bot') if x.endswith(".mp4")]
+        ext = [".mp4",".m4a"]
+        files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
