@@ -4,9 +4,10 @@ from discord.ext import commands
 from bs4 import BeautifulSoup
 # import tweepy
 # import glob
-import webApp
-import musicMu
-import miscMu
+import webApp, musicMu,miscMu
+from pingMu import pingMu
+
+
 
 import importlib
 importlib.reload(webApp)
@@ -64,7 +65,16 @@ async def helpme(ctx, arg=""):
         !whatanime: gets name of anime and episode from gif or image
         !opgg: gets an accounts op.gg
         !twit: gets video of twitter post and sends it to channel, also works on twitch clips, prolly more
-        !redv: gets reddit video from post**
+        !redv: gets reddit video from post
+        
+        Ping Library: (do !helpme ping)
+        !pingCreate: Creates group for pinging purposes
+        !pingAdd: Adds member to group 
+        !pingRemove: Removes member from group
+        !ping: Pings group
+        
+        **
+        
 
 
         For specific syntax do !helpme <command>
@@ -150,30 +160,19 @@ async def helpme(ctx, arg=""):
         !redv <url of post> | the url is just any reddit post that has a v.reddit link
         screw this thing too
         """)
+    elif arg == "ping":
+        await ctx.send("""
+        !pingCreate <Group Name>: Creates group for pinging purposes
+        !pingAdd <Group Name> <@Member>: Adds member to group, do @ and let discord fill in the rest
+        !pingAddMult <Group Name> <@Member>...<@Member>: Add multiple members to group at once.
+        !pingRemove <Group Name> <@Member>: Removes member from group, do @ and let discord fill in the rest
+        !ping <Group Name>: Pings group
+        
+        These functions create local files to keep track of them meaning they remain even if the Anumu Bot goes down.
+        
+        """)
 
 
-
-
-"""
-bl3(ctx) is a function that @'s all owners of Borderlands 3
-"""
-
-
-@bot.command()
-async def bl3(ctx):
-    await ctx.send(
-        'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
-
-
-"""
-animegang(ctx) is a function that @'s weebs
-"""
-
-
-@bot.command()
-async def weebs(ctx):
-    await ctx.send(
-        'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
 
 
 """
@@ -333,6 +332,7 @@ async def firstmsg(ctx):
     await ctx.send(msg.jump_url)
 
 
+bot.add_cog(pingMu.Ping(bot))
 bot.add_cog(miscMu.Misc(bot))
 bot.add_cog(webApp.web(bot)) #Reddit
 bot.add_cog(musicMu.Music(bot))
