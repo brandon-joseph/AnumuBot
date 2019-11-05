@@ -138,4 +138,6 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def glenoku2(self,ctx):
-        await ctx.send('In the works')
+        await ctx.send("""In the works but for now:
+                      https://vimeo.com/371258450 
+                      pass: glen""")
