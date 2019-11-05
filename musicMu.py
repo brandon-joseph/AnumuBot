@@ -17,7 +17,7 @@ youtube_dl.utils.bug_reports_message = lambda: ''
 
 ytdl_format_options = {
     'format': 'bestaudio/best',
-    'outtmpl': '%(extractor)s-%(id)s-%(title)s.%(ext)s',
+    'outtmpl': 'musicMu/%(extractor)s-%(id)s-%(title)s.mp4',
     'restrictfilenames': True,
     'noplaylist': True,
     'nocheckcertificate': True,
@@ -74,7 +74,6 @@ class Music(commands.Cog):
     @commands.command()
     async def play(self, ctx, *, query):
         """Plays a file from the local filesystem"""
-
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
@@ -103,25 +102,27 @@ class Music(commands.Cog):
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays from a url (almost anything youtube_dl supports)"""
+        try:
+            await ctx.send("Working...")
+            async with ctx.typing():
+                player = await YTDLSource.from_url(url, loop=self.bot.loop)
+            ext = [".mp4",".m4a"]
+            files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
+            latest_file = max(files, key=os.path.getctime)
+            print(latest_file)
 
-        await ctx.send("Working...")
-        async with ctx.typing():
-            player = await YTDLSource.from_url(url, loop=self.bot.loop)
-        ext = [".mp4",".m4a"]
-        files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
-        latest_file = max(files, key=os.path.getctime)
-        print(latest_file)
 
+            statinfo = os.stat(latest_file).st_size
+            if (statinfo <= 8000000):
+                await ctx.send(file=discord.File(latest_file))
+                return
+            # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+            clip = mp.VideoFileClip(latest_file)
+            clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
-        statinfo = os.stat(latest_file).st_size
-        if (statinfo <= 8000000):
-            await ctx.send(file=discord.File(latest_file))
-            return
-        # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
-        clip = mp.VideoFileClip(latest_file)
-        clip.write_videofile("movie_resized.mp4", bitrate="200k")
-
-        await ctx.send(file=discord.File("movie_resized.mp4"))
+            await ctx.send(file=discord.File("movie_resized.mp4"))
+        except:
+            await ctx.send("Bad link")
 
     @commands.command()
     async def ytsearch(self, ctx, *, url):
@@ -169,6 +170,26 @@ class Music(commands.Cog):
         await ctx.send(file=discord.File("movie_resized.mp4"))
 
     @commands.command()
+    async def playlast(self, ctx):
+        """Plays a file from the local filesystem"""
+
+        ext = [".mp4", ".m4a"]
+        files = [x for x in os.listdir(os.getcwd() + '/musicMu' ) if x.endswith(tuple(ext))]
+        os.chdir('musicMu/')
+        query = 'musicMu/' + max(files, key=os.path.getctime)
+        os.chdir('..')
+        print(query)
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
+        ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
+
+        await ctx.send('Now playing: {}'.format(query))
+
+
+
+
+
+
+    @commands.command()
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
 
@@ -178,7 +199,7 @@ class Music(commands.Cog):
         ctx.voice_client.source.volume = volume / 100
         await ctx.send("Changed volume to {}%".format(volume))
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['leave'])
     async def stop(self, ctx):
         """Stops and disconnects the bot from voice"""
 

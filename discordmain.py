@@ -62,7 +62,7 @@ async def helpme(ctx, arg=""):
         !ytsearch: Searches and plays top rated youtube video 
         !stream: Same as yt but doesn't predownload so prolly should use this
         !firstmsg: gets date of first message and gives clickable link!
-        !whatanime: gets name of anime and episode from gif or image
+        !weebdar: gets name of anime and episode from gif or image
         !opgg: gets an accounts op.gg
         !twit: gets video of twitter post and sends it to channel, also works on twitch clips, prolly more
         !redv: gets reddit video from post
@@ -139,9 +139,10 @@ async def helpme(ctx, arg=""):
         await ctx.send("""
         !firstmsg | No parameters taken, channel based
         """)
-    elif arg == "whatanime":
+    elif arg == "weebdar":
         await ctx.send("""
-        !whatanime <url.jpg/png> | Gives information on what anime picture is from
+        !weebdar <url.jpg/png> | Gives information on what anime picture is from
+        Can also do whatanime
         """)
     elif arg == "opgg":
         await ctx.send("""
@@ -236,7 +237,7 @@ https://soruly.github.io/trace.moe/#/
 """
 
 
-@bot.command()
+@bot.command(pass_context=True, aliases=['weebdar'])
 async def whatanime(ctx, url):
     try:
         r = requests.get("https://trace.moe/api/search?url=" + url)
