@@ -8,13 +8,13 @@ At the moment only I can add this bot to servers, so no installation is possible
 ##Bot Capabilities:
 At the moment the bot is capable of doing manythings, including but not limited to:
 
-Misc:
+###Misc:
 -  again      Rerolls the previous whatgame operation
 -  coin       Flips a coin.
 -  glenoku    Exactly what you think it is
 -  maketeams  Divides people into n teams
 -  whatgame   Takes in a list of games then randomly picks one and returns it
-Music:
+###Music:
 -  join       Joins a voice channel
 -  play       Plays a file from the local filesystem
 -  playlast   Play last downloaded video (yt or play)
@@ -25,7 +25,7 @@ Music:
 -  volume     Changes the player's volume
 -  yt         Downloads and plays from a url 
 -  ytsearch   Search for youtube video to play in VC
-Ping:
+###Ping:
 -  bl3        @'s all owners of Borderlands 3
 -  ping       Pings group
 -  pingAdd    Adds member to group, do @ and let discord fill in the rest
@@ -33,11 +33,11 @@ Ping:
 -  pingCreate Creates group for pinging purposes
 -  pingRemove Removes member from group, do @ and let discord fill in the rest
   weebs      @'s weebs
-web:
+###web:
 -  getreddit  Gets top n posts of subreddit
 -  poll       Creates poll with name then args
 -  whatanime  Finds name of anime using trace.moe API
-​No Category:
+###No Category:
 -  firstmsg   Gets date of first message sent in chat
 -  help       Shows this message
 -  helpme     Lists all non hidden commands in more depth
