@@ -21,6 +21,7 @@ class Ping(commands.Cog):
 
     @commands.command()
     async def bl3(self,ctx):
+        """@'s all owners of Borderlands 3"""
         await ctx.send(
             'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269>')
 
@@ -32,6 +33,7 @@ class Ping(commands.Cog):
 
     @commands.command()
     async def weebs(self,ctx):
+        """@'s weebs"""
         await ctx.send(
             'Assemble: ' + '<@161146253307150336> <@191259371672567809> <@199673866132389889> <@328215412007370762> <@195335847028064269> <@328215412007370762><@191267028454080513><@187745555273744384>')
 
@@ -39,7 +41,7 @@ class Ping(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['pC'])
     async def pingCreate(self,ctx,name):
-
+        """Creates group for pinging purposes"""
         for x in os.listdir(os.getcwd() + '/pingMu'):
             if x == (name + '.txt'):
                 await ctx.send('Already created')
@@ -53,6 +55,7 @@ class Ping(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['p'])
     async def ping(self,ctx,group):
+        """Pings group"""
         try:
             with open('./pingMu/' + group + '.txt', 'rb') as fp:
                 itemlist = pickle.load(fp)
@@ -65,6 +68,7 @@ class Ping(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['pA'])
     async def pingAdd(self,ctx, group, member: discord.User):
+        """Adds member to group, do @ and let discord fill in the rest"""
         for x in os.listdir(os.getcwd() + '/pingMu'):
             if x == (group + '.txt'):
                 with open('./pingMu/' + group + '.txt', 'rb') as fp:
@@ -85,6 +89,7 @@ class Ping(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['pAll','pAddMult'])
     async def pingAddAll(self,ctx, group, *mem: discord.User):
+        """Add multiple members to group at once."""
         for member in mem:
             for x in os.listdir(os.getcwd() + '/pingMu'):
                 if x == (group + '.txt'):
@@ -107,6 +112,7 @@ class Ping(commands.Cog):
 
     @commands.command(pass_context=True, aliases=['pR'])
     async def pingRemove(self,ctx,group, member: discord.User):
+        """Removes member from group, do @ and let discord fill in the rest"""
         for x in os.listdir(os.getcwd() + '/pingMu'):
             if x == (group + '.txt'):
                 with open('./pingMu/' + group + '.txt', 'rb') as fp:

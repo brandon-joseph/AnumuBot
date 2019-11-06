@@ -39,6 +39,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def whatgame(self,ctx, *args):
+        """Takes in a list of games then randomly picks one and returns it"""
         acc = []
         for v in args:
             acc.append(v)
@@ -52,6 +53,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def maketeams(self,ctx, n, *args):
+        """Divides people into n teams"""
         acc = []
         for v in args:
             acc.append(v)
@@ -83,6 +85,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def again(self,ctx):
+        """Rerolls the previous whatgame operation"""
         game = random.choice(globlist)
         await ctx.send('Maybe ' + game + ' is better?')
 
@@ -92,6 +95,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def coin(self,ctx):
+        """Flips a coin."""
         acc = ["Heads", "Tails"]
         game = random.choice(acc)
         await ctx.send(game)
@@ -100,8 +104,9 @@ class Misc(commands.Cog):
     goldmine(ctx) is a hidden command that leads you to Eldorado
     """
 
-    @commands.command()
+    @commands.command(pass_context=True, hidden=True)
     async def goldmine(self,ctx):
+        """Leads you to Eldorado"""
         await ctx.send('You\'ve found it ' + 'https://www.youtube.com/user/Rayzor324/videos?view_as=subscriber')
 
     """
@@ -109,8 +114,9 @@ class Misc(commands.Cog):
     contain games frequented.
     """
 
-    @commands.command()
+    @commands.command(pass_context=True, hidden=True)
     async def usual(self,ctx):
+        """Deprecated function"""
         acc = ["Smite", "League"]
         game = random.choice(acc)
         await ctx.send('How about ' + game + '?')
@@ -119,8 +125,9 @@ class Misc(commands.Cog):
     headshot(ctx) provides a headshot of the great god's face
     """
 
-    @commands.command()
+    @commands.command(pass_context=True, hidden=True)
     async def headshot(self,ctx):
+        """Provides a headshot of the great god's face"""
         channel = ctx.message.channel
         await channel.send(file=discord.File('AmumuSquare.png'))
     """
@@ -129,6 +136,7 @@ class Misc(commands.Cog):
 
     @commands.command()
     async def glenoku(self,ctx):
+        """Exactly what you think it is"""
         await ctx.send('https://www.youtube.com/watch?v=D7c7ywgWnAY')
 
 
@@ -136,8 +144,9 @@ class Misc(commands.Cog):
     glenoku2(ctx) is a hidden comma
     """
 
-    @commands.command()
+    @commands.command(pass_context=True, hidden=True)
     async def glenoku2(self,ctx):
+        """Oh dear it seems you've seen it"""
         await ctx.send("""In the works but for now:
                       https://vimeo.com/371258450 
                       pass: glen""")

@@ -4,12 +4,11 @@ from discord.ext import commands
 from bs4 import BeautifulSoup
 # import tweepy
 # import glob
-import webApp, musicMu,miscMu
+import webApp, musicMu, miscMu
 from pingMu import pingMu
 
-
-
 import importlib
+
 importlib.reload(webApp)
 importlib.reload(musicMu)
 importlib.reload(miscMu)
@@ -21,8 +20,6 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      user_agent='Anumubot by /u/Rayzor324',
                      username='AnumuBot')
 reddit.read_only = True
-
-
 
 bot = commands.Bot(command_prefix='!',
                    description='Anumu has many many many features, too many to list so I only listed some.')
@@ -42,6 +39,7 @@ help(ctx) provides a list of all commands except the hidden ones lol
 
 @bot.command()
 async def helpme(ctx, arg=""):
+    """Lists all non hidden commands in more depth"""
     if arg == "":
         await ctx.send(textwrap.dedent("""
         
@@ -174,8 +172,6 @@ async def helpme(ctx, arg=""):
         """)
 
 
-
-
 """
 on_message(Gohan) is a shitpost
 """
@@ -191,6 +187,7 @@ async def on_message(message):
             What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.
             ''')
 
+
 """
 timer(ctx,time) is takes in time in units of minutes
 """
@@ -198,66 +195,13 @@ timer(ctx,time) is takes in time in units of minutes
 
 @bot.command()
 async def timer(ctx, numero: float):
+    """Timer that takes in time in units of minutes | Can't use other functions during timer"""
     await ctx.send("The timer has started")
     t_end = time.time() + 60 * numero
     while time.time() < t_end:
         if t_end <= 0:
             break
     await ctx.send(str(numero) + ' minutes have passed.')
-
-
-"""
-poll(ctx,name,args) creates poll
-"""
-
-
-@bot.command()
-async def poll(ctx, name, *args):
-    acc = []
-    for v in args:
-        acc.append(v)
-
-    polley = {
-        "title": name,
-        "options": acc,
-        "multi": True
-    }
-
-    body = json.dumps(polley)
-    myurl = "https://www.strawpoll.me/api/v2/polls"
-    r = requests.post(url=myurl, data=body)
-
-    dic = r.json()
-    await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
-
-
-"""
-whatanime(ctx, url) finds name of anime using trace.moe API
-https://soruly.github.io/trace.moe/#/
-"""
-
-
-@bot.command(pass_context=True, aliases=['weebdar'])
-async def whatanime(ctx, url):
-    try:
-        r = requests.get("https://trace.moe/api/search?url=" + url)
-        r.raise_for_status()
-    except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
-        await ctx.send("Server down")
-    except requests.exceptions.HTTPError:
-        await ctx.send("4xx, 5xx error")
-    else:
-        result = r.json()
-        docs = (result['docs'])[0]
-        title = docs['title_english']
-        mal_id = docs['mal_id']
-        mal = "https://myanimelist.net/anime/" + str(mal_id)
-        ep = docs['episode']
-        sim = docs["similarity"]
-        await ctx.send("""Title: {title}
-        Episode: {ep}
-        Similarity: {similarity}
-        Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
 
 
 #######LEAGUE BLOCK
@@ -277,6 +221,7 @@ opgg(ctx,name) gets name's op.gg, assuming they're on NA
 
 @bot.command()
 async def opgg(ctx, *args):
+    """Gets name's op.gg, assuming they're on NA"""
     name = listToString(args)
     newstring = (str(name)).replace(" ", "+")
     url = "https://na.op.gg/summoner/userName=" + newstring
@@ -292,8 +237,9 @@ Ropgg(ctx,name) gets name's op.gg, has region support
 """
 
 
-@bot.command()
+@bot.command(pass_context=True, hidden=True)
 async def Ropgg(ctx, name, region="na"):
+    """Gets name's op.gg, has region support, can do euw,kr,etc."""
     newstring = (str(name)).replace(" ", "+")
     url = "https://" + region + ".op.gg/summoner/userName=" + newstring
     r = requests.get(url)
@@ -306,6 +252,13 @@ async def Ropgg(ctx, name, region="na"):
 ######LEAGUE BLCOK
 
 
+######TEST
+
+
+bot.help_command
+
+#######TEST
+
 
 ####Fun Server Features
 """
@@ -315,6 +268,7 @@ joined(ctx,member) prints when user first joined the server.
 
 @bot.command()
 async def joined(ctx, *, member: discord.Member):
+    """Prints when user first joined the server."""
     await ctx.send('{0} joined on {0.joined_at}'.format(member))
 
 
@@ -325,6 +279,7 @@ firstmsg(ctx) gets date of first message sent in chat
 
 @bot.command()
 async def firstmsg(ctx):
+    """Gets date of first message sent in chat"""
     channel = ctx.message.channel
     async for x in channel.history(limit=1, oldest_first=True):
         msg = x
@@ -335,6 +290,6 @@ async def firstmsg(ctx):
 
 bot.add_cog(pingMu.Ping(bot))
 bot.add_cog(miscMu.Misc(bot))
-bot.add_cog(webApp.web(bot)) #Reddit
+bot.add_cog(webApp.web(bot))  # Reddit
 bot.add_cog(musicMu.Music(bot))
 bot.run(config.config["discordKey"])

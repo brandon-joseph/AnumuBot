@@ -1,5 +1,5 @@
 import discordmain
-import praw, twitter
+import praw, twitter, requests,json
 from discord.ext import commands
 import config
 
@@ -36,9 +36,69 @@ class web(commands.Cog):
 
     @commands.command()
     async def getreddit(self, ctx, sub, n):
+        """Gets top n posts of subreddit"""
         main = getPosts(sub, int(n))
         for submis in main:
             await ctx.send(submis[0] + '\n' + submis[1] + '\n\n')
+
+
+
+    """
+    whatanime(ctx, url) finds name of anime using trace.moe API
+    https://soruly.github.io/trace.moe/#/
+    """
+
+
+    @commands.command(pass_context=True, aliases=['weebdar'])
+    async def whatanime(self,ctx, url):
+        """Finds name of anime using trace.moe API"""
+        try:
+            r = requests.get("https://trace.moe/api/search?url=" + url)
+            r.raise_for_status()
+        except (requests.exceptions.ConnectionError, requests.exceptions.Timeout):
+            await ctx.send("Server down")
+        except requests.exceptions.HTTPError:
+            await ctx.send("4xx, 5xx error")
+        else:
+            result = r.json()
+            docs = (result['docs'])[0]
+            title = docs['title_english']
+            mal_id = docs['mal_id']
+            mal = "https://myanimelist.net/anime/" + str(mal_id)
+            ep = docs['episode']
+            sim = docs["similarity"]
+            await ctx.send("""Title: {title}
+            Episode: {ep}
+            Similarity: {similarity}
+            Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
+
+
+    """
+    poll(ctx,name,args) creates poll
+    """
+
+
+    @commands.command()
+    async def poll(self,ctx, name, *args):
+        """Creates poll with name then args"""
+        acc = []
+        for v in args:
+            acc.append(v)
+
+        polley = {
+            "title": name,
+            "options": acc,
+            "multi": True
+        }
+
+        body = json.dumps(polley)
+        myurl = "https://www.strawpoll.me/api/v2/polls"
+        r = requests.post(url=myurl, data=body)
+
+        dic = r.json()
+        await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
+
+
 
 
 

@@ -81,7 +81,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def yt(self, ctx, *, url):
-        """Plays from a url (almost anything youtube_dl supports)"""
+        """Downloads and plays from a url """
 
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
@@ -91,7 +91,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def stream(self, ctx, *, url):
-        """Streams from a url (same as yt, but doesn't predownload)"""
+        """Streams from a url"""
 
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
@@ -101,7 +101,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def twit(self, ctx, *, url):
-        """Plays from a url (almost anything youtube_dl supports)"""
+        """Plays video from twitter directly (works on almost all media)"""
         try:
             await ctx.send("Working...")
             async with ctx.typing():
@@ -126,6 +126,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def ytsearch(self, ctx, *, url):
+        """Search for youtube video to play in VC"""
         textToSearch = url
         query = urllib.parse.quote(textToSearch)
         url = "https://www.youtube.com/results?search_query=" + query
@@ -147,6 +148,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def redv(self, ctx, *, url):
+        """Gets reddit video from post"""
         post_id = reddit.submission(url=url)
         submission = reddit.submission(id=post_id)
         url = submission.url
@@ -171,7 +173,7 @@ class Music(commands.Cog):
 
     @commands.command()
     async def playlast(self, ctx):
-        """Plays a file from the local filesystem"""
+        """Play last downloaded video (yt or play)"""
 
         ext = [".mp4", ".m4a"]
         files = [x for x in os.listdir(os.getcwd() + '/musicMu' ) if x.endswith(tuple(ext))]
