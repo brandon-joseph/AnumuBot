@@ -159,4 +159,7 @@ class Misc(commands.Cog):
     @commands.command(pass_context=True, hidden=True)
     async def glenoku3(self,ctx):
         """Oh dear it seems you've seen it again"""
-        await ctx.send("""https://youtu.be/VqJ8MIVKRdc""")
+        await ctx.send("""This one also got blocked cause of copyright
+        https://vimeo.com/371526746
+        pass: glen
+        """)
