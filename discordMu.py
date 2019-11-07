@@ -255,8 +255,11 @@ async def Ropgg(ctx, name, region="na"):
 ######TEST
 
 
-bot.help_command
-
+@bot.command(pass_context=True, hidden=True)
+async def test(ctx):
+    """test commands"""
+    channel = ctx.message.channel
+    await ctx.send(ctx.guild.id)
 #######TEST
 
 
@@ -270,6 +273,53 @@ joined(ctx,member) prints when user first joined the server.
 async def joined(ctx, *, member: discord.Member):
     """Prints when user first joined the server."""
     await ctx.send('{0} joined on {0.joined_at}'.format(member))
+
+
+
+
+"""
+on_message_delete logger
+"""
+
+@bot.event
+async def on_message_delete(message):
+    await bot.process_commands(message)
+    channel = message.channel
+    file = {
+         'author': message.author.name,
+         'channel': message.channel.name,
+         'time' : message.created_at.strftime("%m/%d/%Y, %H:%M:%S"),
+        'message': message.content
+        }
+    with open('logMu/delete.json') as f:
+        data = json.load(f)
+    data.update(file)
+
+    with open('logMu/delete.json', 'w') as f:
+        json.dump(data, f)
+
+"""
+on_message_edit logger
+"""
+
+@bot.event
+async def on_message_edit(message,after):
+    await bot.process_commands(message)
+    channel = message.channel
+    file = {
+         'author': message.author.name,
+         'channel': message.channel.name,
+         'time' : message.created_at.strftime("%m/%d/%Y, %H:%M:%S"),
+        'before': message.content,
+        'afterl': after.content
+        }
+    with open('logMu/edit.json') as f:
+        data = json.load(f)
+    data.update(file)
+
+    with open('logMu/edit.json', 'w') as f:
+        json.dump(data, f)
+
 
 
 """
