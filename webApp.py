@@ -1,4 +1,4 @@
-import discordmain
+import discordMu
 import praw, twitter, requests,json
 from discord.ext import commands
 import config

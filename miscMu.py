@@ -129,7 +129,7 @@ class Misc(commands.Cog):
     async def headshot(self,ctx):
         """Provides a headshot of the great god's face"""
         channel = ctx.message.channel
-        await channel.send(file=discord.File('AmumuSquare.png'))
+        await channel.send(file=discord.File('imageMu/AmumuSquare.png'))
     """
     glenoku(ctx) is  exactly what you think it is
     """
