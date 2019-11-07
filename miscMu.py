@@ -150,3 +150,13 @@ class Misc(commands.Cog):
         await ctx.send("""In the works but for now:
                       https://vimeo.com/371258450 
                       pass: glen""")
+
+
+    """
+    glenoku3(ctx) is a hidden comma
+    """
+
+    @commands.command(pass_context=True, hidden=True)
+    async def glenoku3(self,ctx):
+        """Oh dear it seems you've seen it again"""
+        await ctx.send("""https://youtu.be/VqJ8MIVKRdc""")
