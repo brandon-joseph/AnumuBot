@@ -159,7 +159,7 @@ class Misc(commands.Cog):
     @commands.command(pass_context=True, hidden=True)
     async def glenoku3(self,ctx):
         """Oh dear it seems you've seen it again"""
-        await ctx.send("""This one also got blocked cause of copyright
+        await ctx.send("""This one also got blocked cause of copyright, continuation of the GCU (Glen Cinematic Universe)
         https://vimeo.com/371526746
         pass: glen
         """)
