@@ -39,7 +39,7 @@ class web(commands.Cog):
         """Gets top n posts of subreddit"""
         main = getPosts(sub, int(n))
         for submis in main:
-            await ctx.send(submis[0] + '\n' + submis[1] + '\n\n')
+            await ctx.send("```" + '\n' + "Title: " + submis[0] + " ``` " + submis[1] + '\n\n')
 
 
 
@@ -49,8 +49,8 @@ class web(commands.Cog):
     """
 
 
-    @commands.command(pass_context=True, aliases=['weebdar'])
-    async def whatanime(self,ctx, url):
+    @commands.command(pass_context=True, aliases=['whatanime'])
+    async def weebdar(self,ctx, url):
         """Finds name of anime using trace.moe API"""
         try:
             r = requests.get("https://trace.moe/api/search?url=" + url)

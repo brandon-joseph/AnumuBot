@@ -1,9 +1,12 @@
 import discord, random, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-    twitter, moviepy.editor as mp, os, config
+    twitter, moviepy.editor as mp, os, config, pytz
 from discord.ext import commands
+from datetime import timezone, datetime, timedelta
 from bs4 import BeautifulSoup
 # import tweepy
 # import glob
+from pytz.reference import USTimeZone
+
 import webApp, musicMu, miscMu
 from pingMu import pingMu
 
@@ -43,7 +46,7 @@ async def helpme(ctx, arg=""):
     if arg == "":
         await ctx.send(textwrap.dedent("""
         
-        >>> **!whatgame: takes in a list of games then randomly picks one and returns it 
+        >>> ```!whatgame: takes in a list of games then randomly picks one and returns it 
         !again: rerolls the previous whatgame operation 
         !coin: flips a coin. 
         !goldmine:  leads you to the city of gold 
@@ -71,7 +74,7 @@ async def helpme(ctx, arg=""):
         !pingRemove: Removes member from group
         !ping: Pings group
         
-        **
+        ```
         
 
 
@@ -285,15 +288,19 @@ on_message_delete logger
 async def on_message_delete(message):
     await bot.process_commands(message)
     channel = message.channel
+    os.environ["TZ"] = "EST"
+    Eastern = USTimeZone(-5, "Eastern", "EST", "EDT")
+    time = message.created_at
+    time.replace(tzinfo=Eastern)
     file = {
          'author': message.author.name,
          'channel': message.channel.name,
-         'time' : message.created_at.strftime("%m/%d/%Y, %H:%M:%S"),
+         'time' : time.strftime("%m/%d/%Y, %H:%M:%S.%Z"),
         'message': message.content
         }
     with open('logMu/delete.json') as f:
         data = json.load(f)
-    data.update(file)
+    data["data"]['servers'].append(file)
 
     with open('logMu/delete.json', 'w') as f:
         json.dump(data, f)
@@ -315,7 +322,7 @@ async def on_message_edit(message,after):
         }
     with open('logMu/edit.json') as f:
         data = json.load(f)
-    data.update(file)
+    data["data"]['servers'].append(file)
 
     with open('logMu/edit.json', 'w') as f:
         json.dump(data, f)
