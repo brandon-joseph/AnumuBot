@@ -102,8 +102,9 @@ class Music(commands.Cog):
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays video from twitter directly (works on almost all media)"""
+        await ctx.send("Working...")
         try:
-            await ctx.send("Working...")
+
             async with ctx.typing():
                 player = await YTDLSource.from_url(url, loop=self.bot.loop)
             ext = [".mp4",".m4a"]
