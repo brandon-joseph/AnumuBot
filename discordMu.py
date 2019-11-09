@@ -5,15 +5,15 @@ import urllib.request as req
 from pytz.reference import USTimeZone
 from urllib.parse import urlparse
 from PIL import Image
+from datetime import datetime
 
-
-import webApp, musicMu, miscMu
+import webApp, mediaMu, miscMu
 from pingMu import pingMu
 
 import importlib
 
 importlib.reload(webApp)
-importlib.reload(musicMu)
+importlib.reload(mediaMu)
 importlib.reload(miscMu)
 
 # reddit initialize
@@ -302,13 +302,11 @@ async def on_message_delete(message):
     await bot.process_commands(message)
     channel = message.channel
     os.environ["TZ"] = "EST"
-    Eastern = USTimeZone(-5, "Eastern", "EST", "EDT")
-    time = message.created_at
-    time.replace(tzinfo=Eastern)
+    time = utc_to_local(message.created_at)
     file = {
          'author': message.author.name,
          'channel': message.channel.name,
-         'time' : time.strftime("%m/%d/%Y, %H:%M:%S.%Z"),
+         'time' : time.strftime("%m/%d/%Y, %H:%M:%S"),
         'message': message.content
         }
     with open('logMu/delete.json') as f:
@@ -326,10 +324,11 @@ on_message_edit logger
 async def on_message_edit(message,after):
     await bot.process_commands(message)
     channel = message.channel
+    time = utc_to_local(message.created_at)
     file = {
          'author': message.author.name,
          'channel': message.channel.name,
-         'time' : message.created_at.strftime("%m/%d/%Y, %H:%M:%S"),
+         'time' : time.strftime("%m/%d/%Y, %H:%M:%S"),
         'before': message.content,
         'afterl': after.content
         }
@@ -340,6 +339,12 @@ async def on_message_edit(message,after):
     with open('logMu/edit.json', 'w') as f:
         json.dump(data, f)
 
+
+
+local_tz = pytz.timezone("America/New_York")
+
+def utc_to_local(utc):
+    return utc.replace(tzinfo=pytz.utc).astimezone(local_tz)
 
 
 """
@@ -353,7 +358,7 @@ async def firstmsg(ctx):
     channel = ctx.message.channel
     async for x in channel.history(limit=1, oldest_first=True):
         msg = x
-        tim = x.created_at
+        tim = utc_to_local(x.created_at)
     await ctx.send(tim)
     await ctx.send(msg.jump_url)
 
@@ -361,5 +366,5 @@ async def firstmsg(ctx):
 bot.add_cog(pingMu.Ping(bot))
 bot.add_cog(miscMu.Misc(bot))
 bot.add_cog(webApp.web(bot))  # Reddit
-bot.add_cog(musicMu.Music(bot))
+bot.add_cog(mediaMu.Media(bot))
 bot.run(config.config["discordKey"])

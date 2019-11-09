@@ -16,7 +16,7 @@ At the moment the bot is capable of doing many things, including but not limited
 -  whatgame   Takes in a list of games then randomly picks one and returns it
 
 
-### Music:
+### Media:
 -  join       Joins a voice channel
 -  play       Plays a file from the local filesystem
 -  playlast   Play last downloaded video (yt or play)
