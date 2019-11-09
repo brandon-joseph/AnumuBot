@@ -6,7 +6,7 @@ A bot with Amumu's face from League of Legends but it has nothing to do with Amu
 At the moment only I can add this bot to servers, so no installation is possible
 
 ## Bot Capabilities:
-At the moment the bot is capable of doing manythings, including but not limited to:
+At the moment the bot is capable of doing many things, including but not limited to:
 
 ### Misc:
 -  again      Rerolls the previous whatgame operation
