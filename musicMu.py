@@ -102,27 +102,30 @@ class Music(commands.Cog):
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays video from twitter directly (works on almost all media)"""
-        try:
-            await ctx.send("Working...")
-            async with ctx.typing():
-                player = await YTDLSource.from_url(url, loop=self.bot.loop)
-            ext = [".mp4",".m4a"]
-            files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
-            latest_file = max(files, key=os.path.getctime)
-            print(latest_file)
+        # try:
+        await ctx.send("Working...")
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop)
+        ext = [".mp4",".m4a"]
+        files = [x for x in os.listdir(os.getcwd() + '/musicMu') if x.endswith(tuple(ext))]
+        print(files)
+        os.chdir('musicMu/')
+        latest_file = max(files, key=os.path.getctime)
+      #  os.chdir('..')
+        print(latest_file)
 
 
-            statinfo = os.stat(latest_file).st_size
-            if (statinfo <= 8000000):
-                await ctx.send(file=discord.File(latest_file))
-                return
-            # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
-            clip = mp.VideoFileClip(latest_file)
-            clip.write_videofile("movie_resized.mp4", bitrate="200k")
+        statinfo = os.stat(latest_file).st_size
+        if (statinfo <= 8000000):
+            await ctx.send(file=discord.File(latest_file))
+            return
+        # clip_resized = clip.resize(height=360)  # make the height 360px ( According to moviePy documenation The width is then computed so that the width/height ratio is conserved.)
+        clip = mp.VideoFileClip(latest_file)
+        clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
-            await ctx.send(file=discord.File("movie_resized.mp4"))
-        except:
-            await ctx.send("Bad link")
+        await ctx.send(file=discord.File("movie_resized.mp4"))
+        # except:
+        #     await ctx.send("Bad link")
 
     @commands.command()
     async def ytsearch(self, ctx, *, url):
@@ -157,6 +160,7 @@ class Music(commands.Cog):
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
         ext = [".mp4",".m4a"]
         files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
+        os.chdir('musicMu/')
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
