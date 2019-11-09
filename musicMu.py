@@ -102,7 +102,7 @@ class Music(commands.Cog):
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays video from twitter directly (works on almost all media)"""
-         try:
+        try:
             await ctx.send("Working...")
             async with ctx.typing():
                 player = await YTDLSource.from_url(url, loop=self.bot.loop)
@@ -124,7 +124,7 @@ class Music(commands.Cog):
             clip.write_videofile("movie_resized.mp4", bitrate="200k")
 
             await ctx.send(file=discord.File("movie_resized.mp4"))
-         except:
+        except:
              await ctx.send("Bad link")
 
     @commands.command()
