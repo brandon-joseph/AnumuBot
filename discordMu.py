@@ -7,6 +7,7 @@ from urllib.parse import urlparse
 from PIL import Image
 from datetime import datetime
 
+
 import webApp, mediaMu, miscMu
 from pingMu import pingMu
 
@@ -262,6 +263,13 @@ async def test(ctx):
     """test commands"""
     channel = ctx.message.channel
     await ctx.send(ctx.guild.id)
+
+
+@bot.command(pass_context=True, hidden=True)
+async def hbd(ctx):
+    """adds happy birthday to thing"""
+    channel = ctx.message.channel
+    await ctx.send(file=discord.File("imageMu/Happy_Birthday_Amumu_Edition.gif"))
 
 
 @bot.command()

@@ -1,5 +1,5 @@
 import discord, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-     moviepy.editor as mp, os, config
+     moviepy.editor as mp, os, config,platform
 from discord.ext import commands
 from bs4 import BeautifulSoup
 
@@ -74,7 +74,17 @@ class Media(commands.Cog):
     @commands.command()
     async def play(self, ctx, *, query):
         """Plays a file from the local filesystem"""
-        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(query))
+        plat = platform.system()
+        if ('Darwin' == plat):
+            os.chdir('/Users/brandonjoseph/Music/iTunes/iTunes Media/Music')
+        else:
+            a = 'figure out later'
+        print(os.getcwd())
+        print(plat)
+
+
+
+        source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(os.getcwd() + query))
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(query))
