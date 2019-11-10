@@ -1,5 +1,6 @@
 import discord, random, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-    twitter, moviepy.editor as mp, os, config, pytz
+    twitter, moviepy.editor as mp, os, config, pytz, cv2
+import numpy as np
 from discord.ext import commands
 import urllib.request as req
 from pytz.reference import USTimeZone
@@ -8,7 +9,7 @@ from PIL import Image
 from datetime import datetime
 
 
-import webApp, mediaMu, miscMu
+import webApp, mediaMu, miscMu, imageMu
 from pingMu import pingMu
 
 import importlib
@@ -16,6 +17,7 @@ import importlib
 importlib.reload(webApp)
 importlib.reload(mediaMu)
 importlib.reload(miscMu)
+importlib.reload(imageMu)
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -284,6 +286,8 @@ async def emoji(ctx, url):
 
 
 ####Fun Server Features
+
+
 """
 joined(ctx,member) prints when user first joined the server.
 """
@@ -367,7 +371,7 @@ async def firstmsg(ctx):
     await ctx.send(tim)
     await ctx.send(msg.jump_url)
 
-
+bot.add_cog(imageMu.imageMu(bot))
 bot.add_cog(pingMu.Ping(bot))
 bot.add_cog(miscMu.Misc(bot))
 bot.add_cog(webApp.web(bot))  # Reddit
