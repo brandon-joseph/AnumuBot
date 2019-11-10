@@ -55,7 +55,7 @@ async def helpme(ctx, arg=""):
         !weebs: notifies weebs
         !headshot: provides a headshot of the great god's face 
         !glenoku: is exactly what you think it is 
-        !timer: time is taken in time in units of minutes | WARNING: Can't use other functions while timer runs
+        !timer: time is taken in time in units of minutes 
         !maketeams: Divides list into n random teams 
         !joined: prints when the user first joined the server.
         !getreddit: gets top n posts of given subreddit
@@ -197,7 +197,7 @@ timer(ctx,time) is takes in time in units of minutes
 
 @bot.command()
 async def timer(ctx, numero: float):
-    """Timer that takes in time in units of minutes | Can't use other functions during timer"""
+    """Timer that takes in time in units of minutes"""
     await ctx.send("The timer has started")
     await asyncio.sleep(60 * numero)
     await ctx.send(str(numero) + ' minutes have passed.')
