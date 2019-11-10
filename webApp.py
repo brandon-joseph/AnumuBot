@@ -102,7 +102,7 @@ class web(commands.Cog):
 
     @commands.command(pass_context=True,hidden=True, aliases=['borderlands'])
     async def shift(self,ctx):
-        """Creates poll with name then args"""
+        """gets the latest shift keys for borderlands 3 only"""
         acc = []
         statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True)
         #print(statuses)
