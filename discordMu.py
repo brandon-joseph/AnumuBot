@@ -2,11 +2,10 @@ import discord, random, asyncio, time, praw, requests, json, urllib.request, you
     twitter, moviepy.editor as mp, os, config, pytz, cv2
 import numpy as np
 from discord.ext import commands
-import urllib.request as req
-from pytz.reference import USTimeZone
-from urllib.parse import urlparse
-from PIL import Image
-from datetime import datetime
+from imgurpython import ImgurClient
+
+client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
+
 
 
 import webApp, mediaMu, miscMu, imageMu
@@ -270,17 +269,6 @@ async def hbd(ctx):
     await ctx.send(file=discord.File("imageMu/Happy_Birthday_Amumu_Edition.gif"))
 
 
-@bot.command()
-async def emoji(ctx, url):
-    """resizes url-based image to emoji dimensions"""
-    a = urlparse(url)  #
-    req.urlretrieve(url, "imageMu/" + os.path.basename(a.path))
-    img = Image.open("imageMu/" + os.path.basename(a.path))
-    new_img = img.resize((128, 128))
-    new_img.save("imageMu/resized" + os.path.basename(a.path), "PNG", optimize=True)
-    os.remove("imageMu/" + os.path.basename(a.path))
-    await ctx.send(file=discord.File("imageMu/resized" + os.path.basename(a.path)))
-
 
 #######TEST
 
@@ -340,7 +328,7 @@ async def on_message_edit(message,after):
         'before': message.content,
         'afterl': after.content
         }
-    print(os.getcwd())
+    #print(os.getcwd())
     with open('./logMu/edit.json') as f:
         data = json.load(f)
     data["data"]['servers'].append(file)

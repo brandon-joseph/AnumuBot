@@ -1,13 +1,18 @@
-import discord
+import discord,requests,cv2, config,os
 from discord.ext import commands
-import cv2
+from io import BytesIO
 import numpy as np
+from PIL import Image, ImageDraw
 from matplotlib import pyplot as plt
+import urllib.request as req
+from urllib.parse import urlparse
 
+from imgurpython import ImgurClient
 
+client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 
 class imageMu(commands.Cog):
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(hidden=True,enabled=False)
     async def rmBG(self,ctx):
         # == Parameters
         BLUR = 21
@@ -64,3 +69,58 @@ class imageMu(commands.Cog):
         cv2.waitKey()
         cv2.imwrite("imageMu/test.png", masked)
         await ctx.send(file=discord.File("imageMu/test.png"))
+
+    @commands.command()
+    async def emoji(ctx, url):
+        """resizes url-based image to emoji dimensions"""
+        a = urlparse(url)  #
+        req.urlretrieve(url, "imageMu/" + os.path.basename(a.path))
+        img = Image.open("imageMu/" + os.path.basename(a.path))
+        new_img = img.resize((128, 128))
+        path = "imageMu/resized" + os.path.basename(a.path)
+        if not path.endswith('.png') and not path.endswith('.jpg'):
+            path += '.png'
+        new_img.save(path, "PNG", optimize=True)
+        os.remove("imageMu/" + os.path.basename(a.path))
+        b = client.upload_from_path(path, config=None, anon=True)
+        await ctx.send(b['link'])
+        await ctx.send(file=discord.File(path))
+
+
+    @commands.command(hidden=True)
+    async def circle(self,ctx,url):
+        response = requests.get(url)
+        img = Image.open(BytesIO(response.content))
+        #img = Image.open("dog.jpg").convert("RGB")
+        npImage = np.array(img)
+        h, w = img.size
+
+        # Create same size alpha layer with circle
+        alpha = Image.new('L', img.size, 0)
+        draw = ImageDraw.Draw(alpha)
+        draw.pieslice([0, 0, h, w], 0, 360, fill=255)
+
+        # Convert alpha Image to numpy array
+        npAlpha = np.array(alpha)
+
+        # Add alpha layer to RGB
+        npImage = np.dstack((npImage, npAlpha))
+
+        # Save with alpha
+        Image.fromarray(npImage).save('imageMu/result.png')
+        b = client.upload_from_path('imageMu/result.png', config=None, anon=True)
+        await ctx.send(b['link'])
+        await ctx.send(file=discord.File('imageMu/result.png'))
+
+    @commands.command(hidden=True)
+    async def testimgur(self,ctx):
+        # Example request
+        items = client.gallery()
+        for item in items:
+            print(item.link)
+
+
+    @commands.command(hidden=True)
+    async def imgur(self,ctx):
+       a =  client.upload_from_path('imageMu/AmumuSquare.png', config=None, anon=True)
+       print(a['link'])
