@@ -1,5 +1,5 @@
 import discordMu
-import praw, twitter, requests,json
+import praw, twitter, requests,json,re
 from discord.ext import commands
 import config
 
@@ -15,7 +15,8 @@ reddit.read_only = True
 api = twitter.Api(config.config["twitConsKey"],
                   config.config["twitConsSecret"],
                   config.config["twitAccessKey"],
-                  config.config["twitAccessSecret"])
+                  config.config["twitAccessSecret"],
+                  tweet_mode='extended')
 
 
 
@@ -99,8 +100,19 @@ class web(commands.Cog):
         await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
 
 
+    @commands.command(pass_context=True,hidden=True, aliases=['borderlands'])
+    async def shift(self,ctx):
+        """Creates poll with name then args"""
+        acc = []
+        statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True)
+        #print(statuses)
+        for s in statuses:
+            shift = shiftEx(s.full_text)
+            if shift != "None":
+                acc.append(shift)
 
-
+        await ctx.send(prettyList(acc))
+        #print([s.text for s in statuses])
 
 
 def getPosts(sub, n):
@@ -112,6 +124,22 @@ def getPosts(sub, n):
             main += [[submission.title, submission.url]]
     return main
 
+def shiftEx(str):
+    # list = [y for y in (x.strip() for x in str.splitlines()) if y]
+    check = str.lower()
+    if 'shift code' in check:
+        if "borderlands 3" in check:
+            m = re.search('.....[-].....[-].....[-].....[-].....', str)
+            if m:
+                return m.group(0)
+    return "None"
+
+def prettyList(lst):
+    acc = '```' + '\n'
+    for i in lst:
+        acc += i + '\n'
+    acc += '```'
+    return acc
 
 
 def setup(bot):
