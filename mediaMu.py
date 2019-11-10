@@ -37,7 +37,7 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
 class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.5):
+    def __init__(self, source, *, data, volume=0.20):
         super().__init__(source, volume)
 
         self.data = data
@@ -62,7 +62,7 @@ class Media(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command()
+    @commands.command(pass_context=False, aliases=['joinA'])
     async def join(self, ctx, *, channel: discord.VoiceChannel):
         """Joins a voice channel"""
 
@@ -71,7 +71,7 @@ class Media(commands.Cog):
 
         await channel.connect()
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['playA'])
     async def play(self, ctx, *, query):
         """Plays a file from the local filesystem"""
         plat = platform.system()
@@ -89,7 +89,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(query))
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['ytA'])
     async def yt(self, ctx, *, url):
         """Downloads and plays from a url """
 
@@ -99,7 +99,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['streamA'])
     async def stream(self, ctx, *, url):
         """Streams from a url"""
 
@@ -138,7 +138,7 @@ class Media(commands.Cog):
         except:
              await ctx.send("Bad link")
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['ytsearchA'])
     async def ytsearch(self, ctx, *, url):
         """Search for youtube video to play in VC"""
         textToSearch = url
@@ -206,7 +206,7 @@ class Media(commands.Cog):
 
 
 
-    @commands.command()
+    @commands.command(pass_context=True, aliases=['volumeA'])
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
 

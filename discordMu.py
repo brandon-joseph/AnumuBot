@@ -166,8 +166,7 @@ async def helpme(ctx, arg=""):
     elif arg == "ping":
         await ctx.send("""
         !pingCreate <Group Name>: Creates group for pinging purposes
-        !pingAdd <Group Name> <@Member>: Adds member to group, do @ and let discord fill in the rest
-        !pingAddMult <Group Name> <@Member>...<@Member>: Add multiple members to group at once.
+        !pingAdd <Group Name> <@Members>: Adds listed members to group, do @ and let discord fill in the rest
         !pingRemove <Group Name> <@Member>: Removes member from group, do @ and let discord fill in the rest
         !ping <Group Name>: Pings group
         
@@ -200,10 +199,7 @@ timer(ctx,time) is takes in time in units of minutes
 async def timer(ctx, numero: float):
     """Timer that takes in time in units of minutes | Can't use other functions during timer"""
     await ctx.send("The timer has started")
-    t_end = time.time() + 60 * numero
-    while time.time() < t_end:
-        if t_end <= 0:
-            break
+    await asyncio.sleep(60 * numero)
     await ctx.send(str(numero) + ' minutes have passed.')
 
 
@@ -340,11 +336,12 @@ async def on_message_edit(message,after):
         'before': message.content,
         'afterl': after.content
         }
-    with open('logMu/edit.json') as f:
+    print(os.getcwd())
+    with open('./logMu/edit.json') as f:
         data = json.load(f)
     data["data"]['servers'].append(file)
 
-    with open('logMu/edit.json', 'w') as f:
+    with open('./logMu/edit.json', 'w') as f:
         json.dump(data, f)
 
 

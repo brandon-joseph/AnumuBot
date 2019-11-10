@@ -109,7 +109,6 @@ class Ping(commands.Cog):
 
         await ctx.send("Done")
 
-
     @commands.command(pass_context=True, aliases=['pR'])
     async def pingRemove(self,ctx,group, member: discord.User):
         """Removes member from group, do @ and let discord fill in the rest"""
