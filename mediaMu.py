@@ -1,8 +1,8 @@
 import discord, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-     moviepy.editor as mp, os, config,platform
+     moviepy.editor as mp, os, config,platform,spaw
 from discord.ext import commands
 from bs4 import BeautifulSoup
-
+from imgurpython import ImgurClient
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      client_secret=config.config['redditClientSecret'],
@@ -10,6 +10,12 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      user_agent='Anumubot by /u/Rayzor324',
                      username='AnumuBot')
 reddit.read_only = True
+
+
+imgurclient = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
+
+stm = spaw.SPAW()
+stm.auth('bajabajo@gmail.com', config.config['streamablePass'])
 
 ######YOUTUBE
 # Suppress noise about console usage from errors
@@ -160,7 +166,7 @@ class Media(commands.Cog):
     redv(ctx,post) gets reddit video from post
     """
 
-    @commands.command()
+    @commands.command(help="Gets reddit video from post, use twit if this doesn't work")
     async def redv(self, ctx, *, url):
         """Gets reddit video from post"""
         post_id = reddit.submission(url=url)
@@ -169,14 +175,15 @@ class Media(commands.Cog):
         await ctx.send("Working...")
         async with ctx.typing():
             player = await YTDLSource.from_url(url, loop=self.bot.loop)
-        ext = [".mp4",".m4a"]
-        files = [x for x in os.listdir(os.getcwd()) if x.endswith(tuple(ext))]
+        ext = [".mp4", ".m4a"]
+        files = [x for x in os.listdir(os.getcwd() + '/musicMu') if x.endswith(tuple(ext))]
         os.chdir('musicMu/')
         latest_file = max(files, key=os.path.getctime)
         print(latest_file)
 
+
         statinfo = os.stat(latest_file).st_size
-        if (statinfo <= 8000000):
+        if statinfo <= 8000000:
             await ctx.send("Title: " + submission.title)
             await ctx.send(file=discord.File(latest_file))
             return
@@ -202,9 +209,14 @@ class Media(commands.Cog):
         await ctx.send('Now playing: {}'.format(query))
 
 
-
-
-
+    @commands.command(hidden=True)
+    async def testmed(self,ctx):
+        result = stm.videoUpload('musicMu/goose.mp4')
+        res = stm.retrieve(result['shortcode'],'raw')
+        #await ctx.send(emb)
+        link = 'https://streamable.com/' + result['shortcode']
+        #await asyncio.sleep(5)
+        await ctx.send(link)
 
     @commands.command(pass_context=True, aliases=['volumeA'])
     async def volume(self, ctx, volume: int):

@@ -42,6 +42,20 @@ class web(commands.Cog):
         for submis in main:
             await ctx.send("```" + '\n' + "Title: " + submis[0] + " ``` " + submis[1] + '\n\n')
 
+    """
+    getreddit(ctx,sub,n) gets top n posts of subreddit
+    """
+    @commands.command()
+    async def red(self, ctx, url):
+        """Gets elements out of reddit post"""
+        post_id = reddit.submission(url=url)
+        submission = reddit.submission(id=post_id)
+        title = submission.title
+        if submission.is_self:
+            second = submission.selftext
+        else:
+            second = submission.url
+        await ctx.send("```" + '\n' + "Title: " + title + " ``` " + second + '\n\n')
 
 
     """
