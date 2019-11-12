@@ -259,6 +259,7 @@ async def Ropgg(ctx, name, region="na"):
 async def test(ctx):
     """test commands"""
     channel = ctx.message.channel
+    print("Test")
     await ctx.send(ctx.guild.id)
 
 
@@ -268,6 +269,18 @@ async def hbd(ctx):
     channel = ctx.message.channel
     await ctx.send(file=discord.File("imageMu/Happy_Birthday_Amumu_Edition.gif"))
 
+
+@bot.command()
+async def shutdown(ctx):
+    if ctx.message.author.id == 161146253307150336:
+      print("shutdown")
+      try:
+        await bot.logout()
+      except:
+        print("EnvironmentError")
+        bot.clear()
+    else:
+      await ctx.send("You do not own this bot!")
 
 
 #######TEST

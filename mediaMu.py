@@ -1,3 +1,4 @@
+import aiohttp
 import discord, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
      moviepy.editor as mp, os, config,platform,spaw
 from discord.ext import commands
@@ -88,12 +89,27 @@ class Media(commands.Cog):
         print(os.getcwd())
         print(plat)
 
-
-
         source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(os.getcwd() + query))
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(query))
+
+    @commands.command(pass_context=True, aliases=['loc'])
+    async def playloc(self,ctx):
+        """Plays a file that you send along with it"""
+        message = ctx.message
+        channel = message.channel
+        if message.author != self.bot.user:
+            name = message.attachments[0].filename
+            await message.attachments[0].save('musicMu/run.mp3')
+            print('made it')
+            source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(os.getcwd() +'/musicMu/run.mp3' ))
+            ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
+            await channel.send('Now playing: {}'.format(name))
+
+
+
+
 
     @commands.command(pass_context=True, aliases=['ytA'])
     async def yt(self, ctx, *, url):
@@ -238,6 +254,7 @@ class Media(commands.Cog):
     @yt.before_invoke
     @stream.before_invoke
     @ytsearch.before_invoke
+    @playloc.before_invoke
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
             if ctx.author.voice:
