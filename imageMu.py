@@ -71,7 +71,7 @@ class imageMu(commands.Cog):
         await ctx.send(file=discord.File("imageMu/test.png"))
 
     @commands.command()
-    async def emoji(ctx, url):
+    async def emoji(self,ctx, url):
         """resizes url-based image to emoji dimensions"""
         a = urlparse(url)  #
         req.urlretrieve(url, "imageMu/" + os.path.basename(a.path))
@@ -84,7 +84,7 @@ class imageMu(commands.Cog):
         os.remove("imageMu/" + os.path.basename(a.path))
         b = client.upload_from_path(path, config=None, anon=True)
         await ctx.send(b['link'])
-        await ctx.send(file=discord.File(path))
+        #await ctx.send(file=discord.File(path))
 
 
     @commands.command(hidden=True)
@@ -110,7 +110,7 @@ class imageMu(commands.Cog):
         Image.fromarray(npImage).save('imageMu/result.png')
         b = client.upload_from_path('imageMu/result.png', config=None, anon=True)
         await ctx.send(b['link'])
-        await ctx.send(file=discord.File('imageMu/result.png'))
+        #!await ctx.send(file=discord.File('imageMu/result.png'))
 
     @commands.command(hidden=True)
     async def testimgur(self,ctx):
