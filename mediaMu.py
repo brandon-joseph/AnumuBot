@@ -232,7 +232,7 @@ class Media(commands.Cog):
         #await ctx.send(emb)
         link = 'https://streamable.com/' + result['shortcode']
         #await asyncio.sleep(5)
-        await ctx.send(link)
+        await ctx.send('Link: ' + '\n' + link)
 
     @commands.command(pass_context=True, aliases=['volumeA'])
     async def volume(self, ctx, volume: int):

@@ -124,3 +124,23 @@ class imageMu(commands.Cog):
     async def imgur(self,ctx):
        a =  client.upload_from_path('imageMu/AmumuSquare.png', config=None, anon=True)
        print(a['link'])
+
+
+    @commands.command(hidden=True)
+    async def testimage(self,ctx):
+        message = ctx.message
+        channel = message.channel
+        try:
+            name = message.attachments[0].filename
+        except:
+            name = ""
+
+        #url = message.attachments[0].url
+        print(message.attachments)
+
+
+            # await message.attachments[0].save('musicMu/run.mp3')
+            # print('made it')
+            # source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(os.getcwd() + '/musicMu/run.mp3'))
+            # ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
+            # await channel.send('Now playing: {}'.format(name))

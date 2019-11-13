@@ -285,6 +285,9 @@ async def shutdown(ctx):
 
 #######TEST
 
+@bot.command(hidden=True)
+async def cash(ctx):
+    await ctx.send('Get yourself something nice :dollar:')
 
 ####Fun Server Features
 
