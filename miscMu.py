@@ -164,5 +164,5 @@ class Misc(commands.Cog):
         await ctx.send("""This one also got blocked cause of copyright, continuation of the GCU (Glen Cinematic Universe)
         https://vimeo.com/371526746
         pass: glen
-        https://streamable.com/ru0aogit st
+        https://streamable.com/ru0aogit
         """)
