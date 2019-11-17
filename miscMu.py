@@ -149,7 +149,9 @@ class Misc(commands.Cog):
         """Oh dear it seems you've seen it"""
         await ctx.send("""In the works but for now:
                       https://vimeo.com/371258450 
-                      pass: glen""")
+                      pass: glen
+                      https://streamable.com/24vi5
+                      """)
 
 
     """
@@ -162,4 +164,5 @@ class Misc(commands.Cog):
         await ctx.send("""This one also got blocked cause of copyright, continuation of the GCU (Glen Cinematic Universe)
         https://vimeo.com/371526746
         pass: glen
+        https://streamable.com/ru0aogit st
         """)
