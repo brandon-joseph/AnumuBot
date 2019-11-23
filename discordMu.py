@@ -252,6 +252,7 @@ async def Ropgg(ctx, name, region="na"):
 
 @bot.command()
 async def rank(ctx, *args):
+    """Gets League account name's rank"""
     name = listToString(args)
     newstring = (str(name)).replace(" ", "+")
     url = "https://na.op.gg/summoner/userName=" + newstring
@@ -283,7 +284,23 @@ Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
 
 
 
-
+@bot.command()
+async def isglendiamond(ctx):
+    """You probably already know the answer but try anyway"""
+    name = "KingWhatsitsface"
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    link = "https://na.op.gg/summoner/userName=" + newstring
+    html = r.text
+    parsed_html = BeautifulSoup(html)
+    str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
+    rankname = str1.split(' ', 1)[0]
+    newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+    if rankname == 'Diamond':
+        await ctx.send('''```He is Pog, Glen's rank is {str1}```''')
+    else:
+        await ctx.send('''```Nope, sad stuff. Glen's rank is {str1}```'''.format(str1=str1))
 
 
 @bot.command(pass_context=True, hidden=True)
@@ -292,18 +309,16 @@ async def forestfox(ctx):
     newstring = (str(name)).replace(" ", "+")
     url = "https://na.op.gg/summoner/userName=" + newstring
     r = requests.get(url)
-    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
-        await ctx.send("User doesn't exist probably maybe")
-    else:
-        link = "https://na.op.gg/summoner/userName=" + newstring
-        html = r.text
-        parsed_html = BeautifulSoup(html)
-        str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
-        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
-        ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
-        ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
 
-        await ctx.send('''```{name}'s rank is {str1}
+    link = "https://na.op.gg/summoner/userName=" + newstring
+    html = r.text
+    parsed_html = BeautifulSoup(html)
+    str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
+    newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+    ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
+    ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
+
+    await ctx.send('''```{name}'s rank is {str1}
 {rate}```'''.format(name=newName, str1=str1,rate=ratio.text.strip()))
 
 
@@ -348,7 +363,7 @@ async def hbd(ctx):
     await ctx.send(file=discord.File("imageMu/Happy_Birthday_Amumu_Edition.gif"))
 
 
-@bot.command()
+@bot.command(pass_context=True, hidden=True)
 async def shutdown(ctx):
     if ctx.message.author.id == 161146253307150336:
       print("shutdown")
@@ -358,7 +373,7 @@ async def shutdown(ctx):
         print("EnvironmentError")
         bot.clear()
     else:
-      await ctx.send("You do not own this bot!")
+      await ctx.send("F off m8 you don't own me")
 
 
 #######TEST
