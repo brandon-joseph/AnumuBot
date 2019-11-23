@@ -318,7 +318,7 @@ async def forestfox(ctx):
     ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
     ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
 
-    await ctx.send('''```{name}'s rank is {str1}
+    await ctx.send('''```{name}'s rank is {str
 {rate}```'''.format(name=newName, str1=str1,rate=ratio.text.strip()))
 
 

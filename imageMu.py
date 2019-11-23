@@ -2,10 +2,11 @@ import discord,requests,cv2, config,os
 from discord.ext import commands
 from io import BytesIO
 import numpy as np
-from PIL import Image, ImageDraw
+from PIL import Image, ImageDraw, ImageFont
 from matplotlib import pyplot as plt
 import urllib.request as req
 from urllib.parse import urlparse
+import textwrap
 
 from imgurpython import ImgurClient
 
@@ -144,3 +145,37 @@ class imageMu(commands.Cog):
             # source = discord.PCMVolumeTransformer(discord.FFmpegPCMAudio(os.getcwd() + '/musicMu/run.mp3'))
             # ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
             # await channel.send('Now playing: {}'.format(name))
+
+    @commands.command(hidden=True)
+    async def dignity(self,ctx,name, *args):
+        action = listToString(args)
+        #print(os.getcwd())
+        img = Image.open(os.getcwd() + "/imageMu/dignity.png")
+        draw = ImageDraw.Draw(img)
+        # font = ImageFont.truetype(<font-file>, <font-size>)
+        font = ImageFont.truetype("fonts.otf", 32)
+        # draw.text((x, y),"Sample Text",(r,g,b))
+        draw.text((165, 0), name, (0, 0, 0), font=font)
+        lines = textwrap.wrap(action, width=8)
+        font2 = ImageFont.truetype("fonts.otf", int(32 / len(lines)) * 3)
+        y_text = 44
+        i = 0
+        if len(lines) > 1:
+            for line in lines:
+                width, height = font.getsize(line)
+                if i == len(lines)-1:
+                    line = line + "?"
+                draw.text((165, y_text), line,  (0, 0, 0), font=font2)
+                y_text += int(height/ len(lines)) * 3
+                i+=1
+        else:
+            draw.text((165, 44), action + "?", (0, 0, 0), font=font)
+        img.save('./imageMu/' + name + action + ".png")
+        await ctx.send(file=discord.File('./imageMu/' + name + action + ".png"))
+
+def listToString(list):
+    main = ""
+    for item in list:
+        main += item + " "
+    main = main.strip()
+    return main
