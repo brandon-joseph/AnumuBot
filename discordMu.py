@@ -3,6 +3,7 @@ import discord, random, asyncio, time, praw, requests, json, urllib.request, you
 import numpy as np
 from discord.ext import commands
 from imgurpython import ImgurClient
+from bs4 import BeautifulSoup
 
 client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 
@@ -247,6 +248,83 @@ async def Ropgg(ctx, name, region="na"):
         await ctx.send("User doesn't exist probably maybe")
     else:
         await ctx.send("https://" + region + ".op.gg/summoner/userName=" + newstring)
+
+
+@bot.command()
+async def rank(ctx, *args):
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        link = "https://na.op.gg/summoner/userName=" + newstring
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+
+
+        subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
+        flexobj1 = subs[0]
+
+        flexrank = flexobj1.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
+        try:
+            flexobj2 = subs[1]
+            flexrank2 = flexobj2.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
+            await ctx.send('''```{name}'s rank is {str1}
+Flex Rank 3v3: {flex}
+Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank,flex2=flexrank2))
+        except:
+            await ctx.send('''```{name}'s rank is {str1}
+Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
+        #flexwinrate = flexobj.find('div', attrs={'class': 'sub-tier__grey'}).text.strip()
+
+
+
+
+
+
+@bot.command(pass_context=True, hidden=True)
+async def forestfox(ctx):
+    name = "Forest Fox!"
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        link = "https://na.op.gg/summoner/userName=" + newstring
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+        ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
+        ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
+
+        await ctx.send('''```{name}'s rank is {str1}
+{rate}```'''.format(name=newName, str1=str1,rate=ratio.text.strip()))
+
+
+@bot.command(pass_context=True, hidden=True)
+async def match(ctx, *args):
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        link = "https://na.op.gg/summoner/userName=" + newstring
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+        topteam = parsed_html.body.find('div', attrs={'class': 'HeaderCell TeamName'}).text.strip()
+        print(topteam)
+        await ctx.send('''```{name}'s rank is {str1}```'''.format(name=newName, str1=str1))
+
 
 
 ######LEAGUE BLCOK
