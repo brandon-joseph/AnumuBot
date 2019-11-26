@@ -282,6 +282,112 @@ Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank,flex2
 Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
         #flexwinrate = flexobj.find('div', attrs={'class': 'sub-tier__grey'}).text.strip()
 
+###region
+
+@bot.command(hidden=True)
+async def Rrank(ctx,region, *args):
+    """Gets League account name's rank
+    region can be kr,euw,etc."""
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://" + region + ".op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+
+
+        subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
+        flexobj1 = subs[0]
+
+        flexrank = flexobj1.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
+        try:
+            flexobj2 = subs[1]
+            flexrank2 = flexobj2.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
+            await ctx.send('''```{name}'s rank is {str1}
+Flex Rank 3v3: {flex}
+Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank,flex2=flexrank2))
+        except:
+            await ctx.send('''```{name}'s rank is {str1}
+Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
+        #flexwinrate = flexobj.find('div', attrs={'class': 'sub-tier__grey'}).text.strip()
+
+####winrate
+@bot.command(hidden=True,aliases=['winratio'])
+async def winrate(ctx, *args):
+    """Gets winrates of all Ranked Playlists. Hidden."""
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        link = "https://na.op.gg/summoner/userName=" + newstring
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+        subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
+        flexobj1 = subs[0]
+
+        try:
+            flexratio5 = flexobj1.find('div', attrs={'class': 'sub-tier__gray-text'}).text.strip()
+        except:
+            flexratio5 = "N/A"
+        try:
+            flexobj2 = subs[1]
+            flexrank3 = flexobj2.find('div', attrs={'class': 'sub-tier__gray-text'}).text.strip()
+        except:
+            flexrank3 = "N/A"
+
+
+    ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
+    ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
+
+    await ctx.send('''```{name}: 
+Solo: {rate}
+5v5: {flex5}
+3v3: {flex3}```'''.format(name=newName,rate=ratio.text.strip(),flex5=flexratio5,flex3 = flexrank3))
+
+
+
+####oldranks
+def toMulti(lst):
+    base = """"""
+    for i in lst:
+        base += i + " \n "
+
+    return base
+
+
+
+@bot.command()
+async def oldranks(ctx, *args):
+    """Gets Past ranks. Hidden."""
+    name = listToString(args)
+    newstring = (str(name)).replace(" ", "+")
+    url = "https://na.op.gg/summoner/userName=" + newstring
+    r = requests.get(url)
+    if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        await ctx.send("User doesn't exist probably maybe")
+    else:
+        link = "https://na.op.gg/summoner/userName=" + newstring
+        html = r.text
+        parsed_html = BeautifulSoup(html)
+        str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
+        newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+        ranks = []
+        for ultag in parsed_html.find_all('ul', {'class': 'PastRankList'}):
+            for litag in ultag.find_all('li'):
+                ranks += [litag.text]
+        lst = toMulti(ranks)
+        await ctx.send('''```{name}: 
+{lst}```'''.format(name=newName, lst=lst))
 
 
 @bot.command()
@@ -303,9 +409,12 @@ async def isglendiamond(ctx):
         await ctx.send('''```Nope, sad stuff. Glen's rank is {str1}```'''.format(str1=str1))
 
 
-@bot.command(pass_context=True, hidden=True)
+
+
+@bot.command(hidden=True)
 async def forestfox(ctx):
-    name = "Forest Fox!"
+    """."""
+    name = "Forest Fox"
     newstring = (str(name)).replace(" ", "+")
     url = "https://na.op.gg/summoner/userName=" + newstring
     r = requests.get(url)
@@ -318,12 +427,13 @@ async def forestfox(ctx):
     ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
     ratio = ratioobj.find('span',  attrs={'class': 'winratio'})
 
-    await ctx.send('''```{name}'s rank is {str
+    await ctx.send('''```{name}'s rank is {str1}
 {rate}```'''.format(name=newName, str1=str1,rate=ratio.text.strip()))
 
 
 @bot.command(pass_context=True, hidden=True)
 async def match(ctx, *args):
+    """Get player's current match information. (Never finished this)"""
     name = listToString(args)
     newstring = (str(name)).replace(" ", "+")
     url = "https://na.op.gg/summoner/userName=" + newstring
@@ -336,8 +446,10 @@ async def match(ctx, *args):
         parsed_html = BeautifulSoup(html)
         str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
         newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
-        topteam = parsed_html.body.find('div', attrs={'class': 'HeaderCell TeamName'}).text.strip()
-        print(topteam)
+        #topteam = parsed_html.body.find_all('div', attrs={'class': 'SpectateSummoner'})[0].text.strip()
+        topteam = parsed_html.findAll("div", {"class": "SpectateSummoner"})
+
+        #print(r.text)
         await ctx.send('''```{name}'s rank is {str1}```'''.format(name=newName, str1=str1))
 
 
@@ -381,6 +493,7 @@ async def shutdown(ctx):
 @bot.command(hidden=True)
 async def cash(ctx):
     await ctx.send('Get yourself something nice :dollar:')
+
 
 ####Fun Server Features
 

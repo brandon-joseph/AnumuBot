@@ -55,6 +55,7 @@ class web(commands.Cog):
             second = submission.selftext
         else:
             second = submission.url
+        # print("Red")
         await ctx.send("```" + '\n' + "Title: " + title + " ``` " + second + '\n\n')
 
 
