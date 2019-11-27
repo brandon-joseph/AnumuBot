@@ -1,37 +1,38 @@
-import discord, random, config,requests
+import discord, random, config, requests
 from discord.ext import commands
 
 from bs4 import BeautifulSoup
 
 
-def listToString(list):
+def listToString(lst):
     main = ""
-    for item in list:
+    for item in lst:
         main += item + " "
     main = main.strip()
     return main
 
 
-
-
 def toMulti(lst):
     base = """"""
+    count = 1
     for i in lst:
+        if count == len(lst):
+            break
         base += i + " \n "
-
+        count += 1
+    base += i
     return base
 
 
 class League(commands.Cog):
     #######LEAGUE BLOCK
 
-
     """
     opgg(self,ctx,name) gets name's op.gg, assuming they're on NA
     """
 
     @commands.command()
-    async def opgg(self,ctx, *args):
+    async def opgg(self, ctx, *args):
         """Gets name's op.gg, assuming they're on NA"""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -47,8 +48,9 @@ class League(commands.Cog):
     """
 
     @commands.command(pass_context=True, hidden=True)
-    async def Ropgg(self,ctx, name, region="na"):
-        """Gets name's op.gg, has region support, can do euw,kr,etc."""
+    async def ropgg(self, ctx, region, *args):
+        """Gets name's op.gg, has region support, can do euw,kr,jp,ru,etc."""
+        name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
         url = "https://" + region + ".op.gg/summoner/userName=" + newstring
         r = requests.get(url)
@@ -58,7 +60,7 @@ class League(commands.Cog):
             await ctx.send("https://" + region + ".op.gg/summoner/userName=" + newstring)
 
     @commands.command(aliases=['ranks'])
-    async def rank(self,ctx, *args):
+    async def rank(self, ctx, *args):
         """Gets League account name's rank"""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -67,7 +69,6 @@ class League(commands.Cog):
         if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
             await ctx.send("User doesn't exist probably maybe")
         else:
-            link = "https://na.op.gg/summoner/userName=" + newstring
             html = r.text
             parsed_html = BeautifulSoup(html)
             str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
@@ -81,17 +82,17 @@ class League(commands.Cog):
                 flexobj2 = subs[1]
                 flexrank2 = flexobj2.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
                 await ctx.send('''```{name}'s rank is {str1}
-    Flex Rank 3v3: {flex}
-    Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank, flex2=flexrank2))
+Flex Rank 3v3: {flex}
+Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank, flex2=flexrank2))
             except:
                 await ctx.send('''```{name}'s rank is {str1}
-    Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
+Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
             # flexwinrate = flexobj.find('div', attrs={'class': 'sub-tier__grey'}).text.strip()
 
     ###region
 
     @commands.command(hidden=True)
-    async def Rrank(self,ctx, region, *args):
+    async def Rrank(self, ctx, region, *args):
         """Gets League account name's rank
         region can be kr,euw,etc."""
         name = listToString(args)
@@ -114,16 +115,16 @@ class League(commands.Cog):
                 flexobj2 = subs[1]
                 flexrank2 = flexobj2.find('div', attrs={'class': 'sub-tier__rank-tier'}).text.strip()
                 await ctx.send('''```{name}'s rank is {str1}
-    Flex Rank 3v3: {flex}
-    Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank, flex2=flexrank2))
+Flex Rank 3v3: {flex}
+Flex Rank 5v5: {flex2}```'''.format(name=newName, str1=str1, flex=flexrank, flex2=flexrank2))
             except:
                 await ctx.send('''```{name}'s rank is {str1}
-    Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
+Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
             # flexwinrate = flexobj.find('div', attrs={'class': 'sub-tier__grey'}).text.strip()
 
     ####winrate
-    @commands.command(hidden=True, aliases=['winratio','wr'])
-    async def winrate(self,ctx, *args):
+    @commands.command(hidden=True, aliases=['winratio', 'wr'])
+    async def winrate(self, ctx, *args):
         """Gets winrates of all Ranked Playlists. Hidden. Can also !wr"""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -132,10 +133,8 @@ class League(commands.Cog):
         if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
             await ctx.send("User doesn't exist probably maybe")
         else:
-            link = "https://na.op.gg/summoner/userName=" + newstring
             html = r.text
             parsed_html = BeautifulSoup(html)
-            str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
             newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
             subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
             flexobj1 = subs[0]
@@ -154,13 +153,13 @@ class League(commands.Cog):
         ratio = ratioobj.find('span', attrs={'class': 'winratio'})
 
         await ctx.send('''```{name}: 
-    Solo: {rate}
-    5v5: {flex5}
-    3v3: {flex3}```'''.format(name=newName, rate=ratio.text.strip(), flex5=flexratio5, flex3=flexrank3))
+Solo: {rate}
+5v5: {flex5}
+3v3: {flex3}```'''.format(name=newName, rate=ratio.text.strip(), flex5=flexratio5, flex3=flexrank3))
 
     ####match count
     @commands.command(aliases=['mc'])
-    async def matchcount(self,ctx, *args):
+    async def matchcount(self, ctx, *args):
         """Gets count of all ranked matches. Can also !mc."""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -169,11 +168,12 @@ class League(commands.Cog):
         if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
             await ctx.send("User doesn't exist probably maybe")
         else:
-            link = "https://na.op.gg/summoner/userName=" + newstring
             html = r.text
             parsed_html = BeautifulSoup(html)
-            str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
             newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+
+            level = parsed_html.body.find('span', attrs={'class': 'Level tip'}).text.strip()
+
             subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
             ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
             wins = int(ratioobj.find('span', attrs={'class': 'wins'}).text.strip()[:-1])
@@ -210,18 +210,29 @@ class League(commands.Cog):
                 flex5wins = 0
                 flex5losses = 0
             total = wins + losses + flex3wins + flex3losses + flex5wins + flex5losses
+            totalS = wins + losses
+            total2 =  flex3wins + flex3losses
+            total3 = flex5wins + flex5losses
 
-        await ctx.send('''```{name}:
-    Solo: {solow}W,{solol}L
-    {flex1}: {flex1w}W,{flex1l}L
-    {flex2}: {flex3w}W,{flex3l}L
-    Total: {total} matches```'''.format(name=newName, solow=wins, solol=losses, flex1=flex1, flex1w=flex3wins,
-                                        flex1l=flex3losses, flex2=flex2, flex3w=flex5wins, flex3l=flex5losses,
-                                        total=total))
+            fl2 = flex1[5:8]
+            fl3 = flex2[5:8]
+
+
+            await ctx.send('''```{name}, level {level}:
+----------------------------------------
+Solo: {solow}W,{solol}L | {t1} solo matches
+----------------------------------------
+{flex1}: {flex1w}W,{flex1l}L | {t2} {fl2} matches
+----------------------------------------
+{flex2}: {flex3w}W,{flex3l}L | {t3} {fl3} matches
+----------------------------------------
+Total: {total} matches```'''.format(name=newName, solow=wins, solol=losses, flex1=flex1, flex1w=flex3wins,
+                                    flex1l=flex3losses, flex2=flex2, flex3w=flex5wins, flex3l=flex5losses,
+                                    total=total, level=level,t1=totalS,t2=total2,t3=total3,fl2=fl2,fl3=fl3))
 
     ####oldranks
     @commands.command(aliases=['oldrank'])
-    async def oldranks(self,ctx, *args):
+    async def oldranks(self, ctx, *args):
         """Gets past season ranks"""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -230,27 +241,25 @@ class League(commands.Cog):
         if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
             await ctx.send("User doesn't exist probably maybe")
         else:
-            link = "https://na.op.gg/summoner/userName=" + newstring
             html = r.text
             parsed_html = BeautifulSoup(html)
-            str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
             newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+            level = parsed_html.body.find('span', attrs={'class': 'Level tip'}).text.strip()
             ranks = []
             for ultag in parsed_html.find_all('ul', {'class': 'PastRankList'}):
                 for litag in ultag.find_all('li'):
                     ranks += [litag.text]
             lst = toMulti(ranks)
-            await ctx.send('''```{name}: 
-    {lst}```'''.format(name=newName, lst=lst))
+            await ctx.send('''```{name}, level {level}: 
+    {lst}```'''.format(name=newName, level=level, lst=lst))
 
     @commands.command()
-    async def isglendiamond(self,ctx):
+    async def isglendiamond(self, ctx):
         """You probably already know the answer but try anyway"""
         name = "KingWhatsitsface"
         newstring = (str(name)).replace(" ", "+")
         url = "https://na.op.gg/summoner/userName=" + newstring
         r = requests.get(url)
-        link = "https://na.op.gg/summoner/userName=" + newstring
         html = r.text
         parsed_html = BeautifulSoup(html)
         str1 = parsed_html.body.find_all('div', attrs={'class': 'TierRank'})[0].text.strip()
@@ -262,14 +271,13 @@ class League(commands.Cog):
             await ctx.send('''```Nope, sad stuff. Glen's rank is {str1}```'''.format(str1=str1))
 
     @commands.command(hidden=True)
-    async def forestfox(self,ctx):
+    async def forestfox(self, ctx):
         """."""
         name = "Forest Fox"
         newstring = (str(name)).replace(" ", "+")
         url = "https://na.op.gg/summoner/userName=" + newstring
         r = requests.get(url)
 
-        link = "https://na.op.gg/summoner/userName=" + newstring
         html = r.text
         parsed_html = BeautifulSoup(html)
         str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
@@ -281,7 +289,7 @@ class League(commands.Cog):
     {rate}```'''.format(name=newName, str1=str1, rate=ratio.text.strip()))
 
     @commands.command(pass_context=True, hidden=True)
-    async def match(self,ctx, *args):
+    async def match(self, ctx, *args):
         """Get player's current match information. (Never finished this)"""
         name = listToString(args)
         newstring = (str(name)).replace(" ", "+")
@@ -290,7 +298,6 @@ class League(commands.Cog):
         if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
             await ctx.send("User doesn't exist probably maybe")
         else:
-            link = "https://na.op.gg/summoner/userName=" + newstring
             html = r.text
             parsed_html = BeautifulSoup(html)
             str1 = parsed_html.body.find('div', attrs={'class': 'TierRank'}).text.strip()
@@ -301,4 +308,20 @@ class League(commands.Cog):
             # print(r.text)
             await ctx.send('''```{name}'s rank is {str1}```'''.format(name=newName, str1=str1))
 
+    @commands.command()
+    async def level(self, ctx, *args):
+        """Gets level of league account"""
+        name = listToString(args)
+        newstring = (str(name)).replace(" ", "+")
+        url = "https://na.op.gg/summoner/userName=" + newstring
+        r = requests.get(url)
+        if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+            await ctx.send("User doesn't exist probably maybe")
+        else:
+            html = r.text
+            parsed_html = BeautifulSoup(html)
+            # prof = parsed_html.body.find('div', attrs={'class': 'ProfileIcon'})
+            str1 = parsed_html.body.find('span', attrs={'class': 'Level tip'}).text.strip()
+            newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
+            await ctx.send('''```{name}'s level is {str1}```'''.format(name=newName, str1=str1))
     ######LEAGUE BLCOK
