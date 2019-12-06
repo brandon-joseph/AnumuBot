@@ -339,5 +339,6 @@ bot.add_cog(imageMu.imageMu(bot))
 bot.add_cog(pingMu.Ping(bot))
 bot.add_cog(miscMu.Misc(bot))
 bot.add_cog(webApp.web(bot))  # Reddit
+bot.add_cog(webApp.why(bot))
 bot.add_cog(mediaMu.Media(bot))
 bot.run(config.config["discordKey"])

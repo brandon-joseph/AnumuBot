@@ -1,7 +1,8 @@
 import discordMu
-import praw, twitter, requests,json,re
+import praw, twitter, requests, json, re
 from discord.ext import commands
 import config
+from datetime import date
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -19,10 +20,10 @@ api = twitter.Api(config.config["twitConsKey"],
                   tweet_mode='extended')
 
 
-
 class web(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+
     # """
     # redditcheck(ctx) checks if reddit is working
     # """
@@ -45,6 +46,7 @@ class web(commands.Cog):
     """
     getreddit(ctx,sub,n) gets top n posts of subreddit
     """
+
     @commands.command()
     async def red(self, ctx, url):
         """Gets elements out of reddit post"""
@@ -58,15 +60,13 @@ class web(commands.Cog):
         # print("Red")
         await ctx.send("```" + '\n' + "Title: " + title + " ``` " + second + '\n\n')
 
-
     """
     whatanime(ctx, url) finds name of anime using trace.moe API
     https://soruly.github.io/trace.moe/#/
     """
 
-
     @commands.command(pass_context=True, aliases=['whatanime'])
-    async def weebdar(self,ctx, url):
+    async def weebdar(self, ctx, url):
         """Finds name of anime using trace.moe API"""
         try:
             r = requests.get("https://trace.moe/api/search?url=" + url)
@@ -88,14 +88,12 @@ class web(commands.Cog):
             Similarity: {similarity}
             Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
 
-
     """
     poll(ctx,name,args) creates poll
     """
 
-
     @commands.command()
-    async def poll(self,ctx, name, *args):
+    async def poll(self, ctx, name, *args):
         """Creates poll with name then args"""
         acc = []
         for v in args:
@@ -114,20 +112,22 @@ class web(commands.Cog):
         dic = r.json()
         await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
 
-
-    @commands.command(pass_context=True,hidden=True, aliases=['borderlands'])
-    async def shift(self,ctx):
+    @commands.command(pass_context=True, hidden=True, aliases=['borderlands'])
+    async def shift(self, ctx):
         """gets the latest shift keys for borderlands 3 only"""
         acc = []
-        statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True)
-        #print(statuses)
+
+        # statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True) #For dgShift
+        statuses = api.GetUserTimeline(1185243019622137857, count=100, exclude_replies=True)
+
+        # print(statuses)
         for s in statuses:
             shift = shiftEx(s.full_text)
             if shift != "None":
                 acc.append(shift)
 
         await ctx.send(prettyList(acc))
-        #print([s.text for s in statuses])
+        # print([s.text for s in statuses])
 
 
 def getPosts(sub, n):
@@ -139,15 +139,22 @@ def getPosts(sub, n):
             main += [[submission.title, submission.url]]
     return main
 
-def shiftEx(str):
+
+def shiftEx(tweet):
     # list = [y for y in (x.strip() for x in str.splitlines()) if y]
-    check = str.lower()
+    check = tweet.lower()
+    print(tweet)
     if 'shift code' in check:
         if "borderlands 3" in check:
-            m = re.search('.....[-].....[-].....[-].....[-].....', str)
+            m = re.search('.....[-].....[-].....[-].....[-].....', tweet)
+            n = re.search('[0-9]+ GOLD KEY', tweet)
             if m:
-                return m.group(0)
+                try:
+                    return m.group(0) + "  |  " + n.group(0)
+                except:
+                    return m.group(0) + "  |  Other"
     return "None"
+
 
 def prettyList(lst):
     acc = '```' + '\n'
@@ -157,7 +164,54 @@ def prettyList(lst):
     return acc
 
 
+y = True  # Hides why block
+
+
+class why(commands.Cog):
+
+    @commands.command(hidden=y)
+    async def catfact(self, ctx):
+        """Gets a random cat fact"""
+        r = requests.get("https://catfact.ninja/fact")
+        result = r.json()
+        await ctx.send("```Cat Fact: \n" + result['fact'] + "```")
+
+    @commands.command(hidden=y)
+    async def dog(self, ctx):
+        """Gets a random picture of a dog"""
+        r = requests.get("https://dog.ceo/api/breeds/image/random")
+        result = r.json()
+        await ctx.send(result['message'])
+
+    @commands.command(hidden=y)
+    async def cat(self, ctx):
+        """Gets a random picture of a cat"""
+        r = requests.get("https://aws.random.cat/meow?ref=apilist.fun")
+        result = r.json()
+        await ctx.send(result['file'])
+
+    @commands.command(hidden=y)
+    async def fact(self, ctx):
+        """Gets a random fact"""
+        r = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
+        result = r.json()
+        await ctx.send("```Fact: \n" + result['text'] + "```")
+
+    @commands.command(hidden=y)
+    async def tfact(self, ctx):
+        """Gets today's random fact"""
+        r = requests.get("https://uselessfacts.jsph.pl/today.json?language=en")
+        result = r.json()
+        today = date.today()
+        await ctx.send("```Today's, {dat}, fact: \n\n".format(dat=today) + result['text'] + "```")
+
+    @commands.command(hidden=y)
+    async def kanye(self, ctx):
+        """Gets a kanye quote"""
+        r = requests.get("https://api.kanye.rest/")
+        result = r.json()
+        await ctx.send("```Kanye: \n\n\"" + result['quote'] + "\"```")
+
+
 def setup(bot):
     bot.add_cog(web(bot))
-
-
