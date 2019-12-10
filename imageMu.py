@@ -156,8 +156,8 @@ class imageMu(commands.Cog):
         font = ImageFont.truetype("fonts.otf", 32)
         # draw.text((x, y),"Sample Text",(r,g,b))
         draw.text((165, 0), name, (0, 0, 0), font=font)
-        lines = textwrap.wrap(action, width=8)
-        font2 = ImageFont.truetype("fonts.otf", int(32 / len(lines)) * 3)
+        lines = textwrap.wrap(action, width=10,break_long_words=False)
+        font2 = ImageFont.truetype("fonts.otf", int(32 / len(lines)))
         y_text = 44
         i = 0
         if len(lines) > 1:
@@ -165,8 +165,9 @@ class imageMu(commands.Cog):
                 width, height = font.getsize(line)
                 if i == len(lines)-1:
                     line = line + "?"
-                draw.text((165, y_text), line,  (0, 0, 0), font=font2)
-                y_text += int(height/ len(lines)) * 3
+                draw.text((165, y_text), line,  (0, 0, 0), font=font)
+               # y_text += int(height/ len(lines)) * 3
+                y_text += height
                 i+=1
         else:
             draw.text((165, 44), action + "?", (0, 0, 0), font=font)

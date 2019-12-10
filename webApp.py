@@ -3,6 +3,8 @@ import praw, twitter, requests, json, re
 from discord.ext import commands
 import config
 from datetime import date
+from bs4 import BeautifulSoup
+
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -129,6 +131,15 @@ class web(commands.Cog):
         await ctx.send(prettyList(acc))
         # print([s.text for s in statuses])
 
+    @commands.command( hidden=True)
+    async def price(self,ctx):
+        url = "https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111699000133585467"
+        r = requests.get(url)
+        html = r.text
+        parsed = BeautifulSoup(html)
+        status = parsed.body.find('div', attrs={'class': 'delivery_status'})
+        print(status.text)
+
 
 def getPosts(sub, n):
     main = []
@@ -143,7 +154,6 @@ def getPosts(sub, n):
 def shiftEx(tweet):
     # list = [y for y in (x.strip() for x in str.splitlines()) if y]
     check = tweet.lower()
-    print(tweet)
     if 'shift code' in check:
         if "borderlands 3" in check:
             m = re.search('.....[-].....[-].....[-].....[-].....', tweet)
@@ -154,6 +164,10 @@ def shiftEx(tweet):
                 except:
                     return m.group(0) + "  |  Other"
     return "None"
+
+
+
+
 
 
 def prettyList(lst):
