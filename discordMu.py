@@ -178,6 +178,12 @@ async def helpme(ctx, arg=""):
         
         """)
 
+def listToString(list):
+    main = ""
+    for item in list:
+        main += item + " "
+    main = main.strip()
+    return main
 
 """
 on_message(Gohan) is a shitpost
@@ -206,6 +212,43 @@ async def timer(ctx, numero: float):
     await asyncio.sleep(60 * numero)
     await ctx.send(str(numero) + ' minutes have passed.')
 
+
+@bot.command(hidden=True)
+async def remindme(ctx, dm, time: str, *args):
+    """Do !help remindme
+
+    Remind user via Direct Message or via current channel
+    dm=0 for no dm, dm=1 for dm
+    time is a number with a letter at the end (i.e 10s,13h)
+    Can use s, m, h after time for seconds,minutes or hours. Minutes default"""
+    message = listToString(args)
+    case = time[-1]
+    time = float(time[:-1])
+    await ctx.send("The timer has started")
+    if case == "m":
+        await asyncio.sleep(60 * time)
+        if bool(dm):
+            await ctx.author.send("""{num} minutes have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
+            return
+        await ctx.send("""{num} minutes have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
+    elif case == "s":
+        await asyncio.sleep(time)
+        if bool(dm):
+            await ctx.author.send("""{num} seconds have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
+            return
+        await ctx.send("""{num} seconds have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
+    elif case == "h":
+        await asyncio.sleep(3600 * time)
+        if bool(dm):
+            await ctx.author.send("""{num} hours have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
+            return
+        await ctx.send("""{num} hours have passed. Your message:
+{msg}""".format(msg=message, num=str(time)))
 
 
 ######TEST
@@ -238,7 +281,6 @@ async def shutdown(ctx):
         bot.clear()
     else:
       await ctx.send("F off m8 you don't own me")
-
 
 #######TEST
 

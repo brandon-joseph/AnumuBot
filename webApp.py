@@ -1,5 +1,5 @@
 import discordMu
-import praw, twitter, requests, json, re
+import praw, twitter, requests, json, re,time,asyncio
 from discord.ext import commands
 import config
 from datetime import date
@@ -132,13 +132,28 @@ class web(commands.Cog):
         # print([s.text for s in statuses])
 
     @commands.command( hidden=True)
-    async def price(self,ctx):
-        url = "https://tools.usps.com/go/TrackConfirmAction?tLabels=9400111699000133585467"
+    async def monitor(self,ctx,base):
+        url = base
         r = requests.get(url)
         html = r.text
-        parsed = BeautifulSoup(html)
-        status = parsed.body.find('div', attrs={'class': 'delivery_status'})
-        print(status.text)
+        html5 = r.text
+
+        n = 0
+        starttime = time.time()
+        while (html == html5):
+            r = requests.get(url)
+            html5 = r.text
+            n+=0.5
+            print("time :" + str(n))
+            time.sleep(30.0 - ((time.time() - starttime) % 30.0))
+
+        await ctx.author.send("It's up")
+
+
+
+    @commands.command( hidden=True)
+    async def monitortest(self,ctx):
+        await ctx.author.send("It's up")
 
 
 def getPosts(sub, n):

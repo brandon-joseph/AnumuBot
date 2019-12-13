@@ -1,5 +1,8 @@
+import threading
+
 import discord, random, config
 from discord.ext import commands
+from datetime import datetime,timedelta
 
 globlist = []
 
@@ -99,6 +102,21 @@ class Misc(commands.Cog):
         acc = ["Heads", "Tails"]
         game = random.choice(acc)
         await ctx.send(game)
+
+
+    @commands.command(hidden=True)
+    async def remindmedep(self,ctx,tim,message):
+
+        """Flips a coin."""
+        print("working")
+        now = datetime.now()
+        run_at = now + timedelta(seconds=int(tim))
+        delay = (run_at - now).total_seconds()
+        threading.Timer(delay, self.send(ctx,message)).start()
+
+    def send(self):
+        async def send(ctx, message):
+            await ctx.send("Don't forget to:" + message)
 
     """
     goldmine(ctx) is a hidden command that leads you to Eldorado
