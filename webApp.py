@@ -1,8 +1,12 @@
 import discordMu
-import praw, twitter, requests, json, re,time,asyncio
+import praw, twitter, requests, json, re,time,asyncio,logging,os
 from discord.ext import commands
 import config
 from datetime import date
+from saucenao import SauceNao
+import urllib.request as req
+from PIL import Image, ImageDraw, ImageFont
+from urllib.parse import urlparse
 from bs4 import BeautifulSoup
 
 
@@ -20,6 +24,13 @@ api = twitter.Api(config.config["twitConsKey"],
                   config.config["twitAccessKey"],
                   config.config["twitAccessSecret"],
                   tweet_mode='extended')
+
+
+saucenao = SauceNao(directory='directory', databases=999, minimum_similarity=65, combine_api_types=False, api_key=config.config['saucenao'],
+                    exclude_categories='', move_to_categories=False,  use_author_as_category=False,
+                    output_type=SauceNao.API_HTML_TYPE, start_file='', log_level=logging.ERROR,
+                    title_minimum_similarity=90)
+
 
 
 class web(commands.Cog):
@@ -90,6 +101,27 @@ class web(commands.Cog):
             Similarity: {similarity}
             Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
 
+    @commands.command(pass_context=True, aliases=['whatmanga'])
+    async def manga(self, ctx, url):
+        """Finds name of manga"""
+        a = urlparse(url)  #
+        req.urlretrieve(url, os.getcwd() + "/imageMu/manga.jpg")
+        print(os.getcwd())
+        #img = Image.open("imageMu/" + os.path.basename(a.path))
+        filtered_results = saucenao.check_file(file_name=os.getcwd() + "/imageMu/manga.jpg")
+        print(filtered_results)
+        head = filtered_results[0]
+        similarity = head['header']['similarity'] + "%"
+        title = head['data']['title']
+        try:
+            link = head['data']['ext_urls'][0]
+        except:
+            link = "N/A"
+
+        await ctx.send(f"""```Title: {title}
+Similarity: {similarity}
+Link:  {link}```""")
+
     """
     poll(ctx,name,args) creates poll
     """
@@ -120,11 +152,13 @@ class web(commands.Cog):
         acc = []
 
         # statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True) #For dgShift
-        statuses = api.GetUserTimeline(1185243019622137857, count=100, exclude_replies=True)
+        statuses = api.GetUserTimeline(1185243019622137857, count=50, exclude_replies=True)
 
         # print(statuses)
         for s in statuses:
-            shift = shiftEx(s.full_text)
+            date_format = '%B %-d, %Y'
+            dt = date.fromtimestamp(s.created_at_in_seconds).strftime(date_format)
+            shift = shiftEx(s.full_text, dt)
             if shift != "None":
                 acc.append(shift)
 
@@ -166,7 +200,7 @@ def getPosts(sub, n):
     return main
 
 
-def shiftEx(tweet):
+def shiftEx(tweet, dt):
     # list = [y for y in (x.strip() for x in str.splitlines()) if y]
     check = tweet.lower()
     if 'shift code' in check:
@@ -175,9 +209,9 @@ def shiftEx(tweet):
             n = re.search('[0-9]+ GOLD KEY', tweet)
             if m:
                 try:
-                    return m.group(0) + "  |  " + n.group(0)
+                    return m.group(0) + "  |  " + n.group(0)  + "  |  "  + dt
                 except:
-                    return m.group(0) + "  |  Other"
+                    return m.group(0) + "  |  Other" + "       |  " + dt
     return "None"
 
 

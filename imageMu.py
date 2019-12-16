@@ -88,8 +88,9 @@ class imageMu(commands.Cog):
         #await ctx.send(file=discord.File(path))
 
 
-    @commands.command(hidden=True)
+    @commands.command(hidden=False)
     async def circle(self,ctx,url):
+        """yes"""
         response = requests.get(url)
         img = Image.open(BytesIO(response.content))
         #img = Image.open("dog.jpg").convert("RGB")

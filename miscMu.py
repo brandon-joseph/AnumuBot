@@ -184,3 +184,23 @@ class Misc(commands.Cog):
         pass: glen
         https://streamable.com/ru0aogit
         """)
+
+
+    @commands.command()
+    async def uwu(self, ctx, *args):
+        name = str(listToString(args))
+        msg = name.replace("th", "d")
+        message = msg.replace('L', 'W')
+        message = message.replace('R', 'W')
+        message = message.replace('l', 'w')
+        message = message.replace('r', 'w')
+        message = message.replace('ou', 'uw')
+        await ctx.send(message + " uwu")
+
+
+def listToString(lst):
+    main = ""
+    for item in lst:
+        main += item + " "
+    main = main.strip()
+    return main

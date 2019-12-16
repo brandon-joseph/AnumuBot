@@ -1,9 +1,13 @@
+import itertools
+
 import aiohttp
 import discord, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
      moviepy.editor as mp, os, config,platform,spaw
 from discord.ext import commands
 from bs4 import BeautifulSoup
 from imgurpython import ImgurClient
+from async_timeout import timeout
+from functools import partial
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      client_secret=config.config['redditClientSecret'],
@@ -44,11 +48,10 @@ ytdl = youtube_dl.YoutubeDL(ytdl_format_options)
 
 
 class YTDLSource(discord.PCMVolumeTransformer):
-    def __init__(self, source, *, data, volume=0.20):
+    def __init__(self, source, *, data, volume=0.50):
         super().__init__(source, volume)
 
         self.data = data
-
         self.title = data.get('title')
         self.url = data.get('url')
 
@@ -63,23 +66,56 @@ class YTDLSource(discord.PCMVolumeTransformer):
 
         filename = data['url'] if stream else ytdl.prepare_filename(data)
         return cls(discord.FFmpegPCMAudio(filename, **ffmpeg_options), data=data)
+    @classmethod
+    async def regather_stream(cls, data, *, loop):
+        """Used for preparing a stream, instead of downloading.
+        Since Youtube Streaming links expire."""
+        loop = loop or asyncio.get_event_loop()
+        requester = data['requester']
+
+        to_run = partial(ytdl.extract_info, url=data['webpage_url'], download=False)
+        data = await loop.run_in_executor(None, to_run)
+
+        return cls(discord.FFmpegPCMAudio(data['url']), data=data)
+
+
+    @classmethod
+    async def create_source(cls, ctx, search: str, *, loop, download=False):
+        loop = loop or asyncio.get_event_loop()
+
+        to_run = partial(ytdl.extract_info, url=search, download=download)
+        data = await loop.run_in_executor(None, to_run)
+
+        if 'entries' in data:
+            # take first item from a playlist
+            data = data['entries'][0]
+
+        await ctx.send(f'```ini\n[Added {data["title"]} to the Queue.]\n```', delete_after=15)
+
+        if download:
+            source = ytdl.prepare_filename(data)
+        else:
+            return {'webpage_url': data['webpage_url'], 'requester': ctx.author, 'title': data['title']}
+
+        return cls(discord.FFmpegPCMAudio(source), data=data)
 
 
 class Media(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.command(pass_context=False, aliases=['joinA'])
+
+   # @commands.command(pass_context=False, aliases=['joinA'],enabled=False,hidden=True)
     async def join(self, ctx, *, channel: discord.VoiceChannel):
         """Joins a voice channel"""
-
+        self._channel = ctx.channel
         if ctx.voice_client is not None:
             return await ctx.voice_client.move_to(channel)
 
         await channel.connect()
 
-    @commands.command(pass_context=True, aliases=['playA'])
-    async def play(self, ctx, *, query):
+  #  @commands.command(pass_context=True, aliases=['playA'],enabled=False,hidden=True)
+    async def playM(self, ctx, *, query):
         """Plays a file from the local filesystem"""
         plat = platform.system()
         if ('Darwin' == plat):
@@ -93,6 +129,7 @@ class Media(commands.Cog):
         ctx.voice_client.play(source, after=lambda e: print('Player error: %s' % e) if e else None)
 
         await ctx.send('Now playing: {}'.format(query))
+
 
     @commands.command(pass_context=True, aliases=['loc'])
     async def playloc(self,ctx):
@@ -111,7 +148,7 @@ class Media(commands.Cog):
 
 
 
-    @commands.command(pass_context=True, aliases=['ytA'])
+   # @commands.command(pass_context=True, aliases=['ytA'],enabled=False,hidden=True)
     async def yt(self, ctx, *, url):
         """Downloads and plays from a url """
 
@@ -121,7 +158,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-    @commands.command(pass_context=True, aliases=['streamA'])
+    @commands.command(pass_context=True, aliases=['streamA'],enabled=False,hidden=True)
     async def stream(self, ctx, *, url):
         """Streams from a url"""
 
@@ -131,6 +168,42 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
+    #@commands.command(pass_context=True, aliases=['ytsearchA', 'yts'], enabled=False, hidden=True)
+    async def ytsearch(self, ctx, *, url):
+        """Search for youtube video to play in VC"""
+        textToSearch = url
+        query = urllib.parse.quote(textToSearch)
+        url = "https://www.youtube.com/results?search_query=" + query
+        response = urllib.request.urlopen(url)
+        html = response.read()
+        soup = BeautifulSoup(html, 'html.parser')
+        for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
+            url = 'https://www.youtube.com' + vid['href']
+            print(url)
+            break
+        async with ctx.typing():
+            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=False)
+            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
+
+        await ctx.send('Now playing: {}'.format(player.title))
+
+    #@commands.command(pass_context=True, aliases=['volumeA'],enabled=False,hidden=True)
+    async def volume(self, ctx, volume: int):
+        """Changes the player's volume"""
+
+        if ctx.voice_client is None:
+            return await ctx.send("Not connected to a voice channel.")
+
+        ctx.voice_client.source.volume = volume / 100
+        await ctx.send("Changed volume to {}%".format(volume))
+
+    #@commands.command(pass_context=True, aliases=['leave'])
+    async def stop(self, ctx):
+        """Stops and disconnects the bot from voice"""
+
+        await ctx.voice_client.disconnect()
+
+#################
     @commands.command()
     async def twit(self, ctx, *, url):
         """Plays video from twitter directly (works on almost all media)"""
@@ -160,23 +233,6 @@ class Media(commands.Cog):
         except:
              await ctx.send("Bad link")
 
-    @commands.command(pass_context=True, aliases=['ytsearchA'])
-    async def ytsearch(self, ctx, *, url):
-        """Search for youtube video to play in VC"""
-        textToSearch = url
-        query = urllib.parse.quote(textToSearch)
-        url = "https://www.youtube.com/results?search_query=" + query
-        response = urllib.request.urlopen(url)
-        html = response.read()
-        soup = BeautifulSoup(html, 'html.parser')
-        for vid in soup.findAll(attrs={'class': 'yt-uix-tile-link'}):
-            url = 'https://www.youtube.com' + vid['href']
-            break
-        async with ctx.typing():
-            player = await YTDLSource.from_url(url, loop=self.bot.loop, stream=True)
-            ctx.voice_client.play(player, after=lambda e: print('Player error: %s' % e) if e else None)
-
-        await ctx.send('Now playing: {}'.format(player.title))
 
     """
     redv(ctx,post) gets reddit video from post
@@ -209,7 +265,7 @@ class Media(commands.Cog):
         await ctx.send("Title: " + submission.title)
         await ctx.send(file=discord.File("movie_resized.mp4"))
 
-    @commands.command()
+    @commands.command(enabled=False,hidden=True)
     async def playlast(self, ctx):
         """Play last downloaded video (yt or play)"""
 
@@ -234,26 +290,12 @@ class Media(commands.Cog):
         #await asyncio.sleep(5)
         await ctx.send('Link: ' + '\n' + link)
 
-    @commands.command(pass_context=True, aliases=['volumeA'])
-    async def volume(self, ctx, volume: int):
-        """Changes the player's volume"""
 
-        if ctx.voice_client is None:
-            return await ctx.send("Not connected to a voice channel.")
 
-        ctx.voice_client.source.volume = volume / 100
-        await ctx.send("Changed volume to {}%".format(volume))
-
-    @commands.command(pass_context=True, aliases=['leave'])
-    async def stop(self, ctx):
-        """Stops and disconnects the bot from voice"""
-
-        await ctx.voice_client.disconnect()
-
-    @play.before_invoke
-    @yt.before_invoke
+   # @playM.before_invoke
+   # @yt.before_invoke
     @stream.before_invoke
-    @ytsearch.before_invoke
+  #  @ytsearch.before_invoke
     @playloc.before_invoke
     async def ensure_voice(self, ctx):
         if ctx.voice_client is None:
@@ -267,3 +309,6 @@ class Media(commands.Cog):
 
 
 #####YOUTUBE
+
+def setup(bot):
+    bot.add_cog(Media(bot))

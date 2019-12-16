@@ -53,7 +53,7 @@ class Ping(commands.Cog):
 
         await ctx.send('Created')
 
-    @commands.command(pass_context=True, aliases=['p'])
+    @commands.command(pass_context=True, aliases=['pi'])
     async def ping(self,ctx,group):
         """Pings group"""
         try:

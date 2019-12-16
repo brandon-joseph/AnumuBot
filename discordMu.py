@@ -9,7 +9,7 @@ client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 
 
 
-import webApp, mediaMu, miscMu, imageMu,gameMu
+import webApp, mediaMu, miscMu, imageMu, gameMu, queueMu
 from pingMu import pingMu
 
 import importlib
@@ -19,7 +19,7 @@ importlib.reload(mediaMu)
 importlib.reload(miscMu)
 importlib.reload(imageMu)
 importlib.reload(gameMu)
-
+importlib.reload(queueMu)
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -261,6 +261,13 @@ async def test(ctx):
     print("Test")
     await ctx.send(ctx.guild.id)
 
+@bot.command(pass_context=True, hidden=True)
+async def invoke(ctx):
+    """test commands"""
+    channel = ctx.message.channel
+    print("Test")
+    ctx.invoke(test, ctx)
+    await ctx.send(ctx.guild.id)
 
 @bot.command(pass_context=True, hidden=True)
 async def hbd(ctx):
@@ -383,4 +390,5 @@ bot.add_cog(miscMu.Misc(bot))
 bot.add_cog(webApp.web(bot))  # Reddit
 bot.add_cog(webApp.why(bot))
 bot.add_cog(mediaMu.Media(bot))
+bot.add_cog(queueMu.Queue(bot))
 bot.run(config.config["discordKey"])
