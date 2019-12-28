@@ -227,7 +227,7 @@ def prettyList(lst):
     return acc
 
 
-y = True  # Hides why block
+y = False  # Hides why block
 
 
 class why(commands.Cog):
