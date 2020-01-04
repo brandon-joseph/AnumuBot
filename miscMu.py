@@ -190,6 +190,7 @@ class Misc(commands.Cog):
     async def uwu(self, ctx, *args):
         name = str(listToString(args))
         msg = name.replace("th", "d")
+        message = msg.replace('is', 'iws')
         message = msg.replace('L', 'W')
         message = message.replace('R', 'W')
         message = message.replace('l', 'w')

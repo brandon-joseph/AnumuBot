@@ -1,7 +1,11 @@
 import discord, random, config, requests
 from discord.ext import commands
-
 from bs4 import BeautifulSoup
+import cassiopeia as cass
+
+
+cass.apply_settings(config.casstuff)
+gchamps = cass.get_champions(region="NA")
 
 
 def listToString(lst):
@@ -312,16 +316,162 @@ Total: {total} matches```'''.format(name=newName, solow=wins, solol=losses, flex
     async def level(self, ctx, *args):
         """Gets level of league account"""
         name = listToString(args)
-        newstring = (str(name)).replace(" ", "+")
-        url = "https://na.op.gg/summoner/userName=" + newstring
-        r = requests.get(url)
-        if "This summoner is not registered at OP.GG. Please check spelling." in r.text:
+        try:
+            kal = cass.Summoner(name=name, region='NA')
+            await ctx.send('''```{name}'s level is {str1}```'''.format(name=kal.name, str1=kal.level))
+        except:
             await ctx.send("User doesn't exist probably maybe")
-        else:
-            html = r.text
-            parsed_html = BeautifulSoup(html)
-            # prof = parsed_html.body.find('div', attrs={'class': 'ProfileIcon'})
-            str1 = parsed_html.body.find('span', attrs={'class': 'Level tip'}).text.strip()
-            newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
-            await ctx.send('''```{name}'s level is {str1}```'''.format(name=newName, str1=str1))
+
     ######LEAGUE BLCOK
+
+    @commands.command()
+    async def goodwith(self, ctx, name):
+        """Returns champs account has above mastery 6 with (slow)"""
+        await ctx.send("Working..."
+                       "")
+        kalturi = cass.Summoner(name=name, region='NA')
+        good_with = kalturi.champion_masteries.filter(lambda cm: cm.level >= 6)
+        names = []
+        for item in good_with:
+            names.append(item.champion.name)
+        await ctx.send('```{nam}\'s best champions: \n'.format(nam=name) + pretlist(names) + '```')
+
+    @commands.command()
+    async def champ(self, ctx, name, champname):
+        """Gets information about champ's use on account
+        """
+        await ctx.send("Working...")
+        try:
+            kal = cass.Summoner(name=name, region='NA')
+            mast = toDict(kal.champion_masteries)
+            champ = mast[champname]
+
+            time = champ.last_played.format('YYYY-MM-DD HH:mm:ss')
+
+            await ctx.send('''```{name}'s {champname}: \n
+Chest Granted: {chest}
+Last played: {lp}
+Mastery level: {lvl}
+Points: {pts}```'''.format(name=champ.summoner.name, champname=champ.champion.name, chest=champ.chest_granted,
+                                lp=time, lvl=champ.level, pts=champ.points))
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command()
+    async def lore(self,ctx,champname):
+        """Gets lore of champion"""
+        try:
+          #  champs = cass.get_champions(region="NA")
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            lore = champ.lore
+            await ctx.send(f'''```{name}: \n
+{lore}```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command(aliases = ['rd'])
+    async def releasedate(self,ctx,champname):
+        """Gets release date of champion"""
+        try:
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            date = champ.release_date.format('YYYY-MM-DD')
+            await ctx.send(f'''```{name}'s release date: \n
+{date}```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+
+    @commands.command()
+    async def allytips(self,ctx,champname):
+        """Gets ally tips for champ"""
+        try:
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            tips = prettyList(champ.ally_tips)
+            await ctx.send(f'''```{name}:
+{tips}```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command()
+    async def enemytips(self,ctx,champname):
+        """Gets enemy tips for champ"""
+        try:
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            tips = prettyList(champ.enemy_tips)
+            await ctx.send(f'''```{name}:
+{tips}```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command()
+    async def diff(self,ctx,champname):
+        """Gets riots evaluation of champ"""
+        try:
+          #  champs = cass.get_champions(region="NA")
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            attack = champ.info.attack
+            defense = champ.info.defense
+            magic = champ.info.magic
+            difficulty = champ.info.difficulty
+            await ctx.send(f'''```{name}: \n
+Attack: {attack}/10
+Defense: {defense}/10
+Magic: {magic}/10
+Difficulty: {difficulty}/10```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command()
+    async def skins(self,ctx,champname):
+        """Gets skin list of champion"""
+        try:
+          #  champs = cass.get_champions(region="NA")
+            dic = miniDic(gchamps)
+            champ = dic[champname]
+            name = champ.name
+            skins = []
+            for i in champ.skins: skins.append(i.name)
+            skins = skins[1:]
+            num = len(skins)
+            await ctx.send(f'''```{name}, {num} skins: \n
+{pretlist(skins)}```''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+
+def toDict(lst):
+    dic = {}
+    for champ in lst:
+        dic[champ.champion.name] = champ
+    return dic
+
+
+def miniDic(lst):
+    dic = {}
+    for champ in lst:
+        dic[champ.name] = champ
+    return dic
+
+def pretlist(lst):
+    result = ''
+    for i in lst:
+        result += i + ", "
+    return result[:-2]
+
+
+
+def prettyList(lst):
+    acc = '\n'
+    for i in lst:
+        acc += i + '\n\n'
+    return acc
