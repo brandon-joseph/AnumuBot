@@ -1,8 +1,9 @@
 import threading
+from datetime import datetime, timedelta
 
-import discord, random, config
+import discord
+import random
 from discord.ext import commands
-from datetime import datetime,timedelta
 
 globlist = []
 

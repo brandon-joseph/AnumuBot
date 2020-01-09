@@ -1,9 +1,13 @@
-import discord, random, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-    twitter, moviepy.editor as mp, os, config, pytz, cv2
-import numpy as np
+import asyncio
+import config
+import discord
+import json
+import os
+import praw
+import pytz
+import textwrap
 from discord.ext import commands
 from imgurpython import ImgurClient
-from bs4 import BeautifulSoup
 
 client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 

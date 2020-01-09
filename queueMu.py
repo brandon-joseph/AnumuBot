@@ -13,6 +13,8 @@ from functools import partial
 from youtube_dl import YoutubeDL
 import os
 
+baseurl = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/"
+
 ytdlopts = {
     'format': 'bestaudio/best',
     'outtmpl': 'musicMu/%(extractor)s-%(id)s-%(title)s.mp4',
@@ -384,6 +386,8 @@ class Queue(commands.Cog):
 
         await self.cleanup(ctx.guild)
 
+
+
     @commands.command()
     async def persona(self, ctx):
         """Plays Persona 5 playlist
@@ -401,7 +405,7 @@ class Queue(commands.Cog):
 
         # List all files
 
-        root = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/Various Artists/PERSONA5 ORIGINAL SOUNDTRACK"
+        root = baseurl + "Various Artists/PERSONA5 ORIGINAL SOUNDTRACK"
         for path, subdirs, files in os.walk(root):
             for name in files:
                 sourcesub = discord.FFmpegPCMAudio(os.path.join(path, name))
@@ -431,7 +435,8 @@ class Queue(commands.Cog):
 
         # List all files
 
-        root = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/Various Artists/NieR_Automata Original Soundtrack"
+        root = baseurl + "Various Artists/NieR_Automata Original Soundtrack"
+
         for path, subdirs, files in os.walk(root):
             for name in files:
                 sourcesub = discord.FFmpegPCMAudio(os.path.join(path, name))
@@ -461,7 +466,7 @@ class Queue(commands.Cog):
 
         # List all files
 
-        root = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/My Hero Academia OST/My Hero Academia OST"
+        root = baseurl + "My Hero Academia OST/My Hero Academia OST"
         for path, subdirs, files in os.walk(root):
             for name in files:
                 sourcesub = discord.FFmpegPCMAudio(os.path.join(path, name))
@@ -490,7 +495,7 @@ class Queue(commands.Cog):
         songs = []
 
         # List all files
-        root = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/Naruto"
+        root = baseurl + "Naruto"
         for path, subdirs, files in os.walk(root):
             for name in files:
                 sourcesub = discord.FFmpegPCMAudio(os.path.join(path, name))
@@ -519,7 +524,7 @@ class Queue(commands.Cog):
         songs = []
 
         # List all files
-        root = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music"
+        root = baseurl
         for path, subdirs, files in os.walk(root):
             for index, name in enumerate(files):
                 if index > 40:

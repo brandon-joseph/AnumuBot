@@ -1,13 +1,16 @@
-import discord,requests,cv2, config,os
-from discord.ext import commands
-from io import BytesIO
-import numpy as np
-from PIL import Image, ImageDraw, ImageFont
-from matplotlib import pyplot as plt
-import urllib.request as req
-from urllib.parse import urlparse
 import textwrap
+import urllib.request as req
+from io import BytesIO
+from urllib.parse import urlparse
 
+import config
+import cv2
+import discord
+import numpy as np
+import os
+import requests
+from PIL import Image, ImageDraw, ImageFont
+from discord.ext import commands
 from imgurpython import ImgurClient
 
 client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])

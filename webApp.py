@@ -1,14 +1,19 @@
-import discordMu
-import praw, twitter, requests, json, re,time,asyncio,logging,os
-from discord.ext import commands
-import config
-from datetime import date
-from saucenao import SauceNao
 import urllib.request as req
-from PIL import Image, ImageDraw, ImageFont
+from datetime import date
 from urllib.parse import urlparse
-from bs4 import BeautifulSoup
 
+import json
+import logging
+import os
+import praw
+import re
+import requests
+import time
+import twitter
+from discord.ext import commands
+from saucenao import SauceNao
+
+import config
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],

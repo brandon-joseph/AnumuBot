@@ -1,8 +1,7 @@
-import discord, random, config, requests
+import config, requests
 from discord.ext import commands
 from bs4 import BeautifulSoup
 import cassiopeia as cass
-
 
 cass.apply_settings(config.casstuff)
 gchamps = cass.get_champions(region="NA")
@@ -153,13 +152,17 @@ Flex Rank 5v5: {flex}```'''.format(name=newName, str1=str1, flex=flexrank))
             except:
                 flexrank3 = "N/A"
 
-        ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
-        ratio = ratioobj.find('span', attrs={'class': 'winratio'})
+            try:
+                ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
+                ratio = ratioobj.find('span', attrs={'class': 'winratio'})
+                rat = ratio.text.strip()
+            except:
+                rat = "N/A"
 
         await ctx.send('''```{name}: 
 Solo: {rate}
 5v5: {flex5}
-3v3: {flex3}```'''.format(name=newName, rate=ratio.text.strip(), flex5=flexratio5, flex3=flexrank3))
+3v3: {flex3}```'''.format(name=newName, rate=rat, flex5=flexratio5, flex3=flexrank3))
 
     ####match count
     @commands.command(aliases=['mc'])
@@ -177,12 +180,17 @@ Solo: {rate}
             newName = parsed_html.body.find('div', attrs={'class': 'Information'}).text.strip().splitlines()[0]
 
             level = parsed_html.body.find('span', attrs={'class': 'Level tip'}).text.strip()
+            try:
+                subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
+                ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
+                wins = int(ratioobj.find('span', attrs={'class': 'wins'}).text.strip()[:-1])
+                losses = int(ratioobj.find('span', attrs={'class': 'losses'}).text.strip()[:-1])
+            except:
+                wins = 0
+                losses = 0
 
-            subs = parsed_html.body.find_all('div', attrs={'class': 'sub-tier'})
-            ratioobj = parsed_html.body.find('div', attrs={'class': 'TierInfo'})
-            wins = int(ratioobj.find('span', attrs={'class': 'wins'}).text.strip()[:-1])
-            losses = int(ratioobj.find('span', attrs={'class': 'losses'}).text.strip()[:-1])
             flexobj1 = subs[0]
+
             try:
                 flex5obj = flexobj1.find('div', attrs={'class': 'sub-tier__info'})
                 flex1 = flex5obj.find('div', attrs={'class': 'sub-tier__rank-type'}).text.strip()
@@ -348,12 +356,19 @@ Total: {total} matches```'''.format(name=newName, solow=wins, solol=losses, flex
 
             time = champ.last_played.format('YYYY-MM-DD HH:mm:ss')
 
-            await ctx.send('''```{name}'s {champname}: \n
+            nam = kal.name
+            champnam = champ.champion.name
+            chest = champ.chest_granted
+            lp = time
+            lvl = champ.level
+            pts = champ.points
+
+
+            await ctx.send(f'''```{nam}'s {champnam}: \n
 Chest Granted: {chest}
 Last played: {lp}
 Mastery level: {lvl}
-Points: {pts}```'''.format(name=champ.summoner.name, champname=champ.champion.name, chest=champ.chest_granted,
-                                lp=time, lvl=champ.level, pts=champ.points))
+Points: {pts}```''')
         except:
             await ctx.send("Bad input or bad something else not sure")
 
@@ -372,8 +387,8 @@ Points: {pts}```'''.format(name=champ.summoner.name, champname=champ.champion.na
             await ctx.send("Bad input or bad something else not sure")
 
     @commands.command(aliases = ['rd'])
-    async def releasedate(self,ctx,champname):
-        """Gets release date of champion"""
+    async def releasedate(self, ctx,  champname):
+        """Gets release date of champion. 35% success rate"""
         try:
             dic = miniDic(gchamps)
             champ = dic[champname]
@@ -447,6 +462,25 @@ Difficulty: {difficulty}/10```''')
 {pretlist(skins)}```''')
         except:
             await ctx.send("Bad input or bad something else not sure")
+
+    @commands.command()
+    async def pp(self, ctx, *args):
+        """Gets profile pic of league account. 50% failure rate
+        """
+        name = listToString(args)
+        print(name)
+        await ctx.send("Working...")
+        try:
+            kal = cass.Summoner(name=name, region='NA')
+            print(kal.exists)
+            await ctx.send(f'''{kal.name}'s profile pic: \n
+{kal.profile_icon.url}''')
+        except:
+            await ctx.send("Bad input or bad something else not sure")
+
+
+
+
 
 
 def toDict(lst):

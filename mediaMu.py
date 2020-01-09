@@ -1,13 +1,19 @@
-import itertools
-
-import aiohttp
-import discord, asyncio, time, praw, requests, json, urllib.request, youtube_dl, textwrap, requests.exceptions, \
-     moviepy.editor as mp, os, config,platform,spaw
-from discord.ext import commands
-from bs4 import BeautifulSoup
-from imgurpython import ImgurClient
-from async_timeout import timeout
 from functools import partial
+
+import asyncio
+import config
+import discord
+import moviepy.editor as mp
+import os
+import platform
+import praw
+import spaw
+import urllib.request
+import youtube_dl
+from bs4 import BeautifulSoup
+from discord.ext import commands
+from imgurpython import ImgurClient
+
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      client_secret=config.config['redditClientSecret'],
