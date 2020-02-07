@@ -1,0 +1,287 @@
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Traceback (most recent call last):
+  File "discordMu.py", line 25, in <module>
+    importlib.reload(gameMu)
+  File "/home/bjj43/miniconda3/lib/python3.7/importlib/__init__.py", line 169, in reload
+    _bootstrap._exec(spec, module)
+  File "<frozen importlib._bootstrap>", line 630, in _exec
+  File "<frozen importlib._bootstrap_external>", line 728, in exec_module
+  File "<frozen importlib._bootstrap>", line 219, in _call_with_frames_removed
+  File "/home/bjj43/AnumuBot/gameMu.py", line 7, in <module>
+    gchamps = cass.get_champions(region="NA")
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/cassiopeia.py", line 101, in get_champions
+    return Champions(region=region)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 214, in __call__
+    return pipeline.get(cls, query=query)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 459, in get
+    return handler.get(query, context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 190, in get
+    sink.put(result, context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 140, in put
+    self._sink.put(self._store_type, item, context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/sinks.py", line 62, in wrapper
+    return call(self, items, context=context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/datastores/cache.py", line 357, in put_champions
+    for champion in champions:
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/container.py", line 355, in __iter__
+    yield next(self)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/container.py", line 368, in __next__
+    value = next(self._generator)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/datastores/ghost.py", line 497, in champions_generator
+    data = context[context.Keys.PIPELINE].get(ChampionListData, query)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 459, in get
+    return handler.get(query, context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 185, in get
+    result = self._source.get(self._source_type, deepcopy(query), context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/sources.py", line 69, in wrapper
+    return call(self, query, context=context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/queries.py", line 326, in wrapped
+    return method(self, query, context)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/datastores/ddragon.py", line 178, in get_champion_list
+    body = json.loads(self._client.get(url)[0])
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/datastores/common.py", line 203, in get
+    body = r.text
+  File "/home/bjj43/.local/lib/python3.7/site-packages/requests/models.py", line 857, in text
+    encoding = self.apparent_encoding
+  File "/home/bjj43/.local/lib/python3.7/site-packages/requests/models.py", line 727, in apparent_encoding
+    return chardet.detect(self.content)['encoding']
+  File "/home/bjj43/miniconda3/lib/python3.7/site-packages/chardet/__init__.py", line 38, in detect
+    detector.feed(byte_str)
+  File "/home/bjj43/miniconda3/lib/python3.7/site-packages/chardet/universaldetector.py", line 211, in feed
+    if prober.feed(byte_str) == ProbingState.FOUND_IT:
+  File "/home/bjj43/miniconda3/lib/python3.7/site-packages/chardet/charsetgroupprober.py", line 71, in feed
+    state = prober.feed(byte_str)
+  File "/home/bjj43/miniconda3/lib/python3.7/site-packages/chardet/utf8prober.py", line 59, in feed
+    coding_state = self.coding_sm.next_state(c)
+  File "/home/bjj43/miniconda3/lib/python3.7/site-packages/chardet/codingstatemachine.py", line 76, in next_state
+    self._curr_state = self._model['state_table'][curr_state]
+KeyboardInterrupt
+ERROR:asyncio:Task exception was never retrieved
+future: <Task finished coro=<MusicPlayer.player_loop() done, defined at /home/bjj43/AnumuBot/queueMu.py:132> exception=AttributeError("'NoneType' object has no attribute 'play'")>
+Traceback (most recent call last):
+  File "/home/bjj43/AnumuBot/queueMu.py", line 159, in player_loop
+    self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+AttributeError: 'NoneType' object has no attribute 'play'
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Logged in as:
+AnumuBot
+Test
+Test
+x Hana Song x
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/xHanaSongx?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/k1yzXlOg4ApX5In24GSrjgizfGjt4HVuQ4fk3z-AWYXdbMQ?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Test
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/kingwhatsitsface?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/tFF_YsnKd1upxbiKWSXD6qizwBQOrGkfVm0z6EBlOKeAcs4?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ForgottenRelics?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/_fjr7UQG4qY75nQawgDq8M_5XRtmScOE8LAWXvML8yyWzVI?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/Phobia44?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/trSvnW67JNegriiWsMTbfxU-IR-x9EP0D3ixa9zsYK9UbOE?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ColonelCloud?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/phobia44?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/kingwhatsitsface?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Test
+Test
+ERROR:asyncio:Task exception was never retrieved
+future: <Task finished coro=<MusicPlayer.player_loop() done, defined at /home/bjj43/AnumuBot/queueMu.py:132> exception=AttributeError("'NoneType' object has no attribute 'play'")>
+Traceback (most recent call last):
+  File "/home/bjj43/AnumuBot/queueMu.py", line 159, in player_loop
+    self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+AttributeError: 'NoneType' object has no attribute 'play'
+Ignoring exception in command poll:
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/bot.py", line 863, in invoke
+    await ctx.command.invoke(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 721, in invoke
+    await self.prepare(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 685, in prepare
+    await self._parse_arguments(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 599, in _parse_arguments
+    transformed = await self.transform(ctx, param)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 445, in transform
+    raise MissingRequiredArgument(param)
+discord.ext.commands.errors.MissingRequiredArgument: name is a required argument that is missing.
+Ignoring exception in command goodwith:
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 41, in wrapper
+    return method(*args, **kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/summoner.py", line 149, in id
+    return self._data[SummonerData].id
+AttributeError: 'SummonerData' object has no attribute 'id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 87, in __get__
+    return self.fget(obj)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 43, in wrapper
+    raise GhostLoadingRequiredError(str(error))
+merakicommons.ghost.GhostLoadingRequiredError: 'SummonerData' object has no attribute 'id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "/home/bjj43/AnumuBot/gameMu.py", line 341, in goodwith
+    good_with = kalturi.champion_masteries.filter(lambda cm: cm.level >= 6)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/summoner.py", line 184, in champion_masteries
+    return ChampionMasteries(summoner=self, region=self.region)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 211, in __call__
+    query = cls.__get_query_from_kwargs__(**kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 49, in default_region_wrapper
+    return method(*args, **kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/championmastery.py", line 49, in __get_query_from_kwargs__
+    query["summoner.id"] = summoner.id
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 90, in __get__
+    obj.__load__(load_group)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 281, in __load__
+    data = configuration.settings.pipeline.get(type=self._load_types[load_group], query=query)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 463, in get
+    raise NotFoundError("No source returned a query result!")
+datapipelines.common.NotFoundError: No source returned a query result!
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/bot.py", line 863, in invoke
+    await ctx.command.invoke(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFoundError: No source returned a query result!
+Ignoring exception in command goodwith:
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 41, in wrapper
+    return method(*args, **kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/summoner.py", line 149, in id
+    return self._data[SummonerData].id
+AttributeError: 'SummonerData' object has no attribute 'id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 87, in __get__
+    return self.fget(obj)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 43, in wrapper
+    raise GhostLoadingRequiredError(str(error))
+merakicommons.ghost.GhostLoadingRequiredError: 'SummonerData' object has no attribute 'id'
+
+During handling of the above exception, another exception occurred:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "/home/bjj43/AnumuBot/gameMu.py", line 341, in goodwith
+    good_with = kalturi.champion_masteries.filter(lambda cm: cm.level >= 6)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/summoner.py", line 184, in champion_masteries
+    return ChampionMasteries(summoner=self, region=self.region)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 211, in __call__
+    query = cls.__get_query_from_kwargs__(**kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 49, in default_region_wrapper
+    return method(*args, **kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/championmastery.py", line 49, in __get_query_from_kwargs__
+    query["summoner.id"] = summoner.id
+  File "/home/bjj43/.local/lib/python3.7/site-packages/merakicommons/ghost.py", line 90, in __get__
+    obj.__load__(load_group)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/cassiopeia/core/common.py", line 281, in __load__
+    data = configuration.settings.pipeline.get(type=self._load_types[load_group], query=query)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/datapipelines/pipelines.py", line 463, in get
+    raise NotFoundError("No source returned a query result!")
+datapipelines.common.NotFoundError: No source returned a query result!
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/bot.py", line 863, in invoke
+    await ctx.command.invoke(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: NotFoundError: No source returned a query result!
+ERROR:asyncio:Task exception was never retrieved
+future: <Task finished coro=<MusicPlayer.player_loop() done, defined at /home/bjj43/AnumuBot/queueMu.py:132> exception=AttributeError("'NoneType' object has no attribute 'play'")>
+Traceback (most recent call last):
+  File "/home/bjj43/AnumuBot/queueMu.py", line 159, in player_loop
+    self._guild.voice_client.play(source, after=lambda _: self.bot.loop.call_soon_threadsafe(self.next.set))
+AttributeError: 'NoneType' object has no attribute 'play'
+[matroska,webm @ 0x55cdf9c43a00] File ended prematurely at pos. 5063429 (0x4d4305)
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Logged in as:
+AnumuBot
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/xHanaSongx?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ForgottenRelics?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/k1yzXlOg4ApX5In24GSrjgizfGjt4HVuQ4fk3z-AWYXdbMQ?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ColonelCloud?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/MXgtlOe_cc1JyqJXjqaHfitRuBNaIkCDJYyZOZ-gXRpQq3U?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/xHanaSongx?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/x?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/x?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/Colonel?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/bqma1lEdp3BdbGvM6yn02QLzYTIA_nwGMa0_KRt7wxXNsB0?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/kingwhatsitsface?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/tFF_YsnKd1upxbiKWSXD6qizwBQOrGkfVm0z6EBlOKeAcs4?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ShadedStriker?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Shaded Striker
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/e96nJRVpgPq4vwTZglgOsY_HpdR1kyAsCCLnElj0NdU5Eho?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Shaded Striker
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/e96nJRVpgPq4vwTZglgOsY_HpdR1kyAsCCLnElj0NdU5Eho?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Logged in as:
+AnumuBot
+Test
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ShadedStriker?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Shaded Striker
+Shaded Striker
+Shaded Striker
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/e96nJRVpgPq4vwTZglgOsY_HpdR1kyAsCCLnElj0NdU5Eho?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Shaded Striker
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Logged in as:
+AnumuBot
+Test
+Shaded Striker
+Shaded Striker
+Shaded Striker
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ShadedStriker?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Shaded Striker
+Shaded Striker
+Colonel Cloud
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ColonelCloud?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Colonel Cloud

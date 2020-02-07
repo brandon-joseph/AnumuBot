@@ -6,3 +6,4 @@ musicMu
 __pycache__/
 .idea
 /deprecated functions.py
+cassData/

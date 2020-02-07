@@ -13,7 +13,7 @@ from functools import partial
 from youtube_dl import YoutubeDL
 import os
 
-baseurl = "/Users/brandonjoseph/Music/iTunes/iTunes Media/Music/"
+baseurl = "/home/bjj43/Music/"
 
 ytdlopts = {
     'format': 'bestaudio/best',
