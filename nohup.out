@@ -285,3 +285,81 @@ Colonel Cloud
 Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ColonelCloud?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
 True
 Colonel Cloud
+Ignoring exception in command pingAddAll:
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 79, in wrapped
+    ret = await coro(*args, **kwargs)
+  File "/home/bjj43/AnumuBot/pingMu/pingMu.py", line 105, in pingAddAll
+    if item != idToString(member.id):
+UnboundLocalError: local variable 'item' referenced before assignment
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/bot.py", line 863, in invoke
+    await ctx.command.invoke(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 728, in invoke
+    await injected(*ctx.args, **ctx.kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 88, in wrapped
+    raise CommandInvokeError(exc) from exc
+discord.ext.commands.errors.CommandInvokeError: Command raised an exception: UnboundLocalError: local variable 'item' referenced before assignment
+Ignoring exception in command pingAdd:
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/bot.py", line 863, in invoke
+    await ctx.command.invoke(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 721, in invoke
+    await self.prepare(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 685, in prepare
+    await self._parse_arguments(ctx)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 599, in _parse_arguments
+    transformed = await self.transform(ctx, param)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/ext/commands/core.py", line 445, in transform
+    raise MissingRequiredArgument(param)
+discord.ext.commands.errors.MissingRequiredArgument: member is a required argument that is missing.
+Ignoring exception in command None:
+discord.ext.commands.errors.CommandNotFound: Command "!!" is not found
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Making call: https://ddragon.leagueoflegends.com/realms/na.json
+Making call: https://ddragon.leagueoflegends.com/cdn/10.1.1/data/en_US/championFull.json
+Logged in as:
+AnumuBot
+Test
+Colonel Cloud
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/ColonelCloud?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Colonel Cloud
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/MXgtlOe_cc1JyqJXjqaHfitRuBNaIkCDJYyZOZ-gXRpQq3U?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+True
+Making call: https://na1.api.riotgames.com/lol/summoner/v4/summoners/by-name/kingwhatsitsface?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Making call: https://na1.api.riotgames.com/lol/champion-mastery/v4/champion-masteries/by-summoner/tFF_YsnKd1upxbiKWSXD6qizwBQOrGkfVm0z6EBlOKeAcs4?api_key=RGAPI-61a6d9eb-1421-4435-b68e-0ac99cf7fe02
+Test
+Test
+Test
+Traceback (most recent call last):
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/gateway.py", line 468, in poll_event
+    msg = await self.recv()
+  File "/home/bjj43/.local/lib/python3.7/site-packages/websockets/protocol.py", line 350, in recv
+    yield from self.ensure_open()
+  File "/home/bjj43/.local/lib/python3.7/site-packages/websockets/protocol.py", line 512, in ensure_open
+    self.close_code, self.close_reason) from self.transfer_data_exc
+websockets.exceptions.ConnectionClosed: WebSocket connection is closed: code = 4004 (private use), reason = Authentication failed.
+
+The above exception was the direct cause of the following exception:
+
+Traceback (most recent call last):
+  File "discordMu.py", line 402, in <module>
+    bot.run(config.config["discordKey"])
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/client.py", line 598, in run
+    return future.result()
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/client.py", line 579, in runner
+    await self.start(*args, **kwargs)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/client.py", line 543, in start
+    await self.connect(reconnect=reconnect)
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/client.py", line 457, in connect
+    await self._connect()
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/client.py", line 421, in _connect
+    await self.ws.poll_event()
+  File "/home/bjj43/.local/lib/python3.7/site-packages/discord/gateway.py", line 476, in poll_event
+    raise ConnectionClosed(exc, shard_id=self.shard_id) from exc
+discord.errors.ConnectionClosed: WebSocket connection is closed: code = 4004 (private use), reason = Authentication failed.
