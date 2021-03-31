@@ -3,7 +3,8 @@ from discord.ext import commands
 from bs4 import BeautifulSoup
 import cassiopeia as cass
 
-cass.apply_settings(config.casstuff)
+#cass.apply_settings(config.casstuff)
+cass.set_riot_api_key(config.config['riotkey'])
 gchamps = cass.get_champions(region="NA")
 
 

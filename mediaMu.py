@@ -13,6 +13,7 @@ import youtube_dl
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from imgurpython import ImgurClient
+from youtube_api import YoutubeDataApi
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -22,6 +23,7 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      username='AnumuBot')
 reddit.read_only = True
 
+YouTube = YoutubeDataApi(config.config["youtubekey"])
 
 imgurclient = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 

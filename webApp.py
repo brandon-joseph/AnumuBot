@@ -258,16 +258,16 @@ class why(commands.Cog):
         result = r.json()
         await ctx.send(result['file'])
 
-    @commands.command(hidden=y)
+    @commands.command(hidden=y,enabled=False)
     async def fact(self, ctx):
-        """Gets a random fact"""
+        """Gets a random fact (Currently Disabled; API down)"""
         r = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
         result = r.json()
         await ctx.send("```Fact: \n" + result['text'] + "```")
 
-    @commands.command(hidden=y)
+    @commands.command(hidden=y,enabled=False)
     async def tfact(self, ctx):
-        """Gets today's random fact"""
+        """Gets today's random fact (Currently Disabled; API down)"""
         r = requests.get("https://uselessfacts.jsph.pl/today.json?language=en")
         result = r.json()
         today = date.today()
@@ -279,6 +279,40 @@ class why(commands.Cog):
         r = requests.get("https://api.kanye.rest/")
         result = r.json()
         await ctx.send("```Kanye: \n\n\"" + result['quote'] + "\"```")
+
+    @commands.command(hidden=y)
+    async def numberfact(self, ctx):
+        """Gets a fact about a random number"""
+        r = requests.get("http://numbersapi.com/random/trivia")
+        await ctx.send("```Fact: \n" + r.text + "```")
+
+
+    @commands.command(hidden=y)
+    async def yearfact(self, ctx):
+        """Gets a fact about a random year"""
+        r = requests.get("http://numbersapi.com/random/year")
+        await ctx.send("```Fact: \n" + r.text + "```")
+
+
+    @commands.command(hidden=y)
+    async def mathfact(self, ctx):
+        """Gets a fact about math"""
+        r = requests.get("http://numbersapi.com/random/math")
+        await ctx.send("```Fact: \n" + r.text + "```")
+
+    @commands.command(hidden=y)
+    async def datefact(self, ctx):
+        """Gets a fact about a random date"""
+        r = requests.get("http://numbersapi.com/random/date")
+        await ctx.send("```Fact: \n" + r.text + "```")
+
+    @commands.command(hidden=y)
+    async def jeopardy(self, ctx):
+        """Gets a random jeopardy question"""
+        r = requests.get("http://jservice.io/api/random")
+        js = r.json()
+        await ctx.send(f"Category: {js[0]['category']['title']}  \n\n Question: {js[0]['question']} \n \n ||{js[0]['answer']} ||")
+        
 
 
 def setup(bot):
