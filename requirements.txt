@@ -1,7 +1,6 @@
 twitter
 saucenao
 moviepy
-cv2
 numpy
 praw
 discord
