@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-twitter
-saucenao
-moviepy
-numpy
-praw
-discord
-APScheduler==3.6.3
-arrow==0.15.4
-astroid==2.3.1
-beautifulsoup4==4.7.1
-=======
 aiohttp==3.7.4.post0
 APScheduler==3.7.0
 argon2-cffi==20.1.0
@@ -22,7 +10,6 @@ attrs==20.3.0
 backcall==0.2.0
 beautifulsoup4==4.9.3
 bleach==3.3.0
->>>>>>> 71e77240c2ddbdfb4e9c440611831b6e11bbc959
 bs4==0.0.1
 cassiopeia==4.0.15
 cassiopeia-diskstore==1.1.3
