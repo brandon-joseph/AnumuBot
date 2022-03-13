@@ -193,7 +193,6 @@ def listToString(list):
 on_message(Gohan) is a shitpost
 """
 
-
 @bot.event
 async def on_message(message):
     await bot.process_commands(message)

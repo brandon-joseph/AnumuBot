@@ -7,3 +7,6 @@ __pycache__/
 .idea
 /deprecated functions.py
 cassData/
+imageMu/
+nohup.out  
+.gitignore
