@@ -1,4 +1,13 @@
 import asyncio
+import queueMu
+import gameMu
+import imageMu
+import miscMu
+import mediaMu
+import webApp
+import importlib
+from pingMu import pingMu
+import asyncio
 import config
 import discord
 import json
@@ -9,14 +18,9 @@ import textwrap
 from discord.ext import commands
 from imgurpython import ImgurClient
 
-client = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
+client = ImgurClient(
+    config.config['imgurClient'], config.config['imgurSecret'])
 
-
-
-import webApp, mediaMu, miscMu, imageMu, gameMu, queueMu
-from pingMu import pingMu
-
-import importlib
 
 importlib.reload(webApp)
 importlib.reload(mediaMu)
@@ -30,10 +34,12 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      client_secret=config.config['redditClientSecret'],
                      password=config.config["redditPass"],
                      user_agent='Anumubot by /u/Rayzor324',
-                     username='AnumuBot')
+                     username='AnumuBot',
+                     intents=discord.Intents.default())
 reddit.read_only = True
 
 bot = commands.Bot(command_prefix='!',
+                   intents=discord.Intents.all(),
                    description='Anumu has many many many features, too many to list so I only listed some.')
 
 
@@ -177,6 +183,7 @@ async def helpme(ctx, arg=""):
         
         """)
 
+
 def listToString(list):
     main = ""
     for item in list:
@@ -184,9 +191,11 @@ def listToString(list):
     main = main.strip()
     return main
 
+
 """
 on_message(Gohan) is a shitpost
 """
+
 
 @bot.event
 async def on_message(message):
@@ -197,7 +206,6 @@ async def on_message(message):
             await channel.send('''Gohan?
             What the fuck did you just fucking say about me, you little bitch? I'll have you know I graduated top of my class in the Navy Seals, and I've been involved in numerous secret raids on Al-Quaeda, and I have over 300 confirmed kills. I am trained in gorilla warfare and I'm the top sniper in the entire US armed forces. You are nothing to me but just another target. I will wipe you the fuck out with precision the likes of which has never been seen before on this Earth, mark my fucking words. You think you can get away with saying that shit to me over the Internet? Think again, fucker. As we speak I am contacting my secret network of spies across the USA and your IP is being traced right now so you better prepare for the storm, maggot. The storm that wipes out the pathetic little thing you call your life. You're fucking dead, kid. I can be anywhere, anytime, and I can kill you in over seven hundred ways, and that's just with my bare hands. Not only am I extensively trained in unarmed combat, but I have access to the entire arsenal of the United States Marine Corps and I will use it to its full extent to wipe your miserable ass off the face of the continent, you little shit. If only you could have known what unholy retribution your little "clever" comment was about to bring down upon you, maybe you would have held your fucking tongue. But you couldn't, you didn't, and now you're paying the price, you goddamn idiot. I will shit fury all over you and you will drown in it. You're fucking dead, kiddo.
             ''')
-
 
 
 """
@@ -264,7 +272,7 @@ async def remindme(ctx, dm, time: str, *args):
 {msg}""".format(msg=message, num=str(time)))
 
 
-######TEST
+# TEST
 
 
 @bot.command(hidden=True)
@@ -274,6 +282,7 @@ async def test(ctx):
     print("Test")
     await ctx.send(ctx.guild.id)
 
+
 @bot.command(hidden=True)
 async def invoke(ctx):
     """test commands"""
@@ -281,6 +290,7 @@ async def invoke(ctx):
     print("Test")
     ctx.invoke(test, ctx)
     await ctx.send(ctx.guild.id)
+
 
 @bot.command(hidden=True)
 async def hbd(ctx):
@@ -293,23 +303,24 @@ async def hbd(ctx):
 @bot.command(hidden=True)
 async def shutdown(ctx):
     if ctx.message.author.id == 161146253307150336:
-      print("shutdown")
-      try:
-        await bot.logout()
-      except:
-        print("EnvironmentError")
-        bot.clear()
+        print("shutdown")
+        try:
+            await bot.logout()
+        except:
+            print("EnvironmentError")
+            bot.clear()
     else:
-      await ctx.send("F off m8 you don't own me")
+        await ctx.send("F off m8 you don't own me")
 
-#######TEST
+# TEST
+
 
 @bot.command(hidden=True)
 async def cash(ctx):
     await ctx.send('Get yourself something nice :dollar:')
 
 
-####Fun Server Features
+# Fun Server Features
 
 
 """
@@ -331,6 +342,7 @@ async def latency(ctx):
 on_message_delete logger
 """
 
+
 @bot.event
 async def on_message_delete(message):
     await bot.process_commands(message)
@@ -338,11 +350,11 @@ async def on_message_delete(message):
     os.environ["TZ"] = "EST"
     time = utc_to_local(message.created_at)
     file = {
-         'author': message.author.name,
-         'channel': message.channel.name,
-         'time' : time.strftime("%m/%d/%Y, %H:%M:%S"),
+        'author': message.author.name,
+        'channel': message.channel.name,
+        'time': time.strftime("%m/%d/%Y, %H:%M:%S"),
         'message': message.content
-        }
+    }
     with open('logMu/delete.json') as f:
         data = json.load(f)
     data["data"]['servers'].append(file)
@@ -354,19 +366,20 @@ async def on_message_delete(message):
 on_message_edit logger
 """
 
+
 @bot.event
-async def on_message_edit(message,after):
+async def on_message_edit(message, after):
     await bot.process_commands(message)
     channel = message.channel
     time = utc_to_local(message.created_at)
     file = {
-         'author': message.author.name,
-         'channel': message.channel.name,
-         'time' : time.strftime("%m/%d/%Y, %H:%M:%S"),
+        'author': message.author.name,
+        'channel': message.channel.name,
+        'time': time.strftime("%m/%d/%Y, %H:%M:%S"),
         'before': message.content,
         'afterl': after.content
-        }
-    #print(os.getcwd())
+    }
+    # print(os.getcwd())
     with open('./logMu/edit.json') as f:
         data = json.load(f)
     data["data"]['servers'].append(file)
@@ -375,8 +388,8 @@ async def on_message_edit(message,after):
         json.dump(data, f)
 
 
-
 local_tz = pytz.timezone("America/New_York")
+
 
 def utc_to_local(utc):
     return utc.replace(tzinfo=pytz.utc).astimezone(local_tz)
@@ -398,12 +411,16 @@ async def firstmsg(ctx):
     await ctx.send(msg.jump_url)
 
 
-bot.add_cog(gameMu.League(bot))
-bot.add_cog(imageMu.imageMu(bot))
-bot.add_cog(pingMu.Ping(bot))
-bot.add_cog(miscMu.Misc(bot))
-bot.add_cog(webApp.web(bot))  # Reddit
-bot.add_cog(webApp.why(bot))
-bot.add_cog(mediaMu.Media(bot))
-bot.add_cog(queueMu.Queue(bot))
+async def setup():
+    await bot.add_cog(gameMu.League(bot))
+    await bot.add_cog(imageMu.imageMu(bot))
+    await bot.add_cog(pingMu.Ping(bot))
+    await bot.add_cog(miscMu.Misc(bot))
+    await bot.add_cog(webApp.web(bot))  # Reddit
+    await bot.add_cog(webApp.why(bot))
+    await bot.add_cog(mediaMu.Media(bot))
+    await bot.add_cog(queueMu.Queue(bot))
+
+asyncio.run(setup())
+
 bot.run(config.config["discordKey"])

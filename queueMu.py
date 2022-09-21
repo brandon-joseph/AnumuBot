@@ -257,7 +257,7 @@ class Queue(commands.Cog):
     async def play_(self, ctx, *, search: str):
         """Add song to queue to the queue
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
@@ -392,7 +392,7 @@ class Queue(commands.Cog):
     async def persona(self, ctx):
         """Plays Persona 5 playlist
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
@@ -422,7 +422,7 @@ class Queue(commands.Cog):
     async def nier(self, ctx):
         """Plays Nier playlist
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
@@ -453,7 +453,7 @@ class Queue(commands.Cog):
     async def mha(self, ctx):
         """Plays My Hero Academia playlist
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
@@ -483,7 +483,7 @@ class Queue(commands.Cog):
     async def naruto(self, ctx):
         """Plays Naruto playlist
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
@@ -512,7 +512,7 @@ class Queue(commands.Cog):
     async def allq(self, ctx):
         """Adds all local songs to playlist
         """
-        await ctx.trigger_typing()
+        await ctx.typing()
 
         vc = ctx.voice_client
 
