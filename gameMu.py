@@ -51,7 +51,7 @@ class League(commands.Cog):
     Ropgg(self,ctx,name) gets name's op.gg, has region support
     """
 
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(hidden=True)
     async def ropgg(self, ctx, region, *args):
         """Gets name's op.gg, has region support, can do euw,kr,jp,ru,etc."""
         name = listToString(args)
@@ -301,7 +301,7 @@ Total: {total} matches```'''.format(name=newName, solow=wins, solol=losses, flex
         await ctx.send('''```{name}'s rank is {str1}
     {rate}```'''.format(name=newName, str1=str1, rate=ratio.text.strip()))
 
-    @commands.command(pass_context=True, hidden=True)
+    @commands.command(hidden=True)
     async def match(self, ctx, *args):
         """Get player's current match information. (Never finished this)"""
         name = listToString(args)

@@ -13,7 +13,7 @@ import youtube_dl
 from bs4 import BeautifulSoup
 from discord.ext import commands
 from imgurpython import ImgurClient
-from youtube_api import YoutubeDataApi
+from youtube_api import YouTubeDataAPI
 
 # reddit initialize
 reddit = praw.Reddit(client_id=config.config["redditClientID"],
@@ -23,7 +23,7 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
                      username='AnumuBot')
 reddit.read_only = True
 
-YouTube = YoutubeDataApi(config.config["youtubekey"])
+YouTube = YouTubeDataAPI(config.config["youtubekey"])
 
 imgurclient = ImgurClient(config.config['imgurClient'], config.config['imgurSecret'])
 
@@ -122,7 +122,7 @@ class Media(commands.Cog):
 
         await channel.connect()
 
-  #  @commands.command(pass_context=True, aliases=['playA'],enabled=False,hidden=True)
+  #  @commands.command(aliases=['playA'],enabled=False,hidden=True)
     async def playM(self, ctx, *, query):
         """Plays a file from the local filesystem"""
         plat = platform.system()
@@ -139,7 +139,7 @@ class Media(commands.Cog):
         await ctx.send('Now playing: {}'.format(query))
 
 
-    @commands.command(pass_context=True, aliases=['loc'])
+    @commands.command(aliases=['loc'])
     async def playloc(self,ctx):
         """Plays a file that you send along with it"""
         message = ctx.message
@@ -156,7 +156,7 @@ class Media(commands.Cog):
 
 
 
-   # @commands.command(pass_context=True, aliases=['ytA'],enabled=False,hidden=True)
+   # @commands.command(aliases=['ytA'],enabled=False,hidden=True)
     async def yt(self, ctx, *, url):
         """Downloads and plays from a url """
 
@@ -166,7 +166,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-    @commands.command(pass_context=True, aliases=['streamA'],enabled=False,hidden=True)
+    @commands.command(aliases=['streamA'],enabled=False,hidden=True)
     async def stream(self, ctx, *, url):
         """Streams from a url"""
 
@@ -176,7 +176,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-    #@commands.command(pass_context=True, aliases=['ytsearchA', 'yts'], enabled=False, hidden=True)
+    #@commands.command(aliases=['ytsearchA', 'yts'], enabled=False, hidden=True)
     async def ytsearch(self, ctx, *, url):
         """Search for youtube video to play in VC"""
         textToSearch = url
@@ -195,7 +195,7 @@ class Media(commands.Cog):
 
         await ctx.send('Now playing: {}'.format(player.title))
 
-    #@commands.command(pass_context=True, aliases=['volumeA'],enabled=False,hidden=True)
+    #@commands.command(aliases=['volumeA'],enabled=False,hidden=True)
     async def volume(self, ctx, volume: int):
         """Changes the player's volume"""
 
@@ -205,7 +205,7 @@ class Media(commands.Cog):
         ctx.voice_client.source.volume = volume / 100
         await ctx.send("Changed volume to {}%".format(volume))
 
-    #@commands.command(pass_context=True, aliases=['leave'])
+    #@commands.command(aliases=['leave'])
     async def stop(self, ctx):
         """Stops and disconnects the bot from voice"""
 

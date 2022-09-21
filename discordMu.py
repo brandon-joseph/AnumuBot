@@ -62,7 +62,6 @@ async def helpme(ctx, arg=""):
         !bl3 : is a function that @'s all owners of Borderlands 3 that I remembered to add
         !weebs: notifies weebs
         !headshot: provides a headshot of the great god's face 
-        !glenoku: is exactly what you think it is 
         !timer: time is taken in time in units of minutes 
         !maketeams: Divides list into n random teams 
         !joined: prints when the user first joined the server.
@@ -112,10 +111,6 @@ async def helpme(ctx, arg=""):
     elif arg == "weebs":
         await ctx.send("""
         !animegang | No parameters taken
-        """)
-    elif arg == "glenoku":
-        await ctx.send("""
-        !glenoku | No parameters taken
         """)
     elif arg == "timer":
         await ctx.send("""
@@ -272,14 +267,14 @@ async def remindme(ctx, dm, time: str, *args):
 ######TEST
 
 
-@bot.command(pass_context=True, hidden=True)
+@bot.command(hidden=True)
 async def test(ctx):
     """test commands"""
     channel = ctx.message.channel
     print("Test")
     await ctx.send(ctx.guild.id)
 
-@bot.command(pass_context=True, hidden=True)
+@bot.command(hidden=True)
 async def invoke(ctx):
     """test commands"""
     channel = ctx.message.channel
@@ -287,7 +282,7 @@ async def invoke(ctx):
     ctx.invoke(test, ctx)
     await ctx.send(ctx.guild.id)
 
-@bot.command(pass_context=True, hidden=True)
+@bot.command(hidden=True)
 async def hbd(ctx):
     """adds happy birthday to thing"""
     if ctx.message.author.id == 161146253307150336:
@@ -295,7 +290,7 @@ async def hbd(ctx):
         await ctx.send(file=discord.File("imageMu/Happy_Birthday_Amumu_Edition.gif"))
 
 
-@bot.command(pass_context=True, hidden=True)
+@bot.command(hidden=True)
 async def shutdown(ctx):
     if ctx.message.author.id == 161146253307150336:
       print("shutdown")

@@ -39,7 +39,7 @@ class Ping(commands.Cog):
 
 
 
-    @commands.command(pass_context=True, aliases=['pC'])
+    @commands.command(aliases=['pC'])
     async def pingCreate(self,ctx,name):
         """Creates group for pinging purposes"""
         for x in os.listdir(os.getcwd() + '/pingMu'):
@@ -53,7 +53,7 @@ class Ping(commands.Cog):
 
         await ctx.send('Created')
 
-    @commands.command(pass_context=True, aliases=['pi'])
+    @commands.command(aliases=['pi'])
     async def ping(self,ctx,group):
         """Pings group"""
         try:
@@ -66,7 +66,7 @@ class Ping(commands.Cog):
             await ctx.send("Possibly corrupt group, likely empty")
 
 
-    @commands.command(pass_context=True, aliases=['pA'])
+    @commands.command(aliases=['pA'])
     async def pingAdd(self,ctx, group, member: discord.User):
         """Adds member to group, do @ and let discord fill in the rest"""
         for x in os.listdir(os.getcwd() + '/pingMu'):
@@ -87,7 +87,7 @@ class Ping(commands.Cog):
                 return
         await ctx.send("Not a real group nerd")
 
-    @commands.command(pass_context=True, aliases=['pAll','pAddMult'])
+    @commands.command(aliases=['pAll','pAddMult'])
     async def pingAddAll(self,ctx, group, *mem: discord.User):
         """Add multiple members to group at once."""
         for member in mem:
@@ -109,7 +109,7 @@ class Ping(commands.Cog):
 
         await ctx.send("Done")
 
-    @commands.command(pass_context=True, aliases=['pR'])
+    @commands.command(aliases=['pR'])
     async def pingRemove(self,ctx,group, member: discord.User):
         """Removes member from group, do @ and let discord fill in the rest"""
         for x in os.listdir(os.getcwd() + '/pingMu'):

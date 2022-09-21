@@ -11,7 +11,6 @@ At the moment the bot is capable of doing many things, including but not limited
 ### Misc:
 -  again      Rerolls the previous whatgame operation
 -  coin       Flips a coin.
--  glenoku    Exactly what you think it is
 -  maketeams  Divides people into n teams
 -  whatgame   Takes in a list of games then randomly picks one and returns it
 

@@ -33,16 +33,14 @@ def prettylist(lst):
     return acc + str(lst[-1])
 
 
-
 class Misc(commands.Cog):
-
 
     """
     whatgame(ctx,*args) takes in a list of games then randomly picks one and returns it
     """
 
     @commands.command()
-    async def whatgame(self,ctx, *args):
+    async def whatgame(self, ctx, *args):
         """Takes in a list of games then randomly picks one and returns it"""
         acc = []
         for v in args:
@@ -56,7 +54,7 @@ class Misc(commands.Cog):
     """
 
     @commands.command()
-    async def maketeams(self,ctx, n, *args):
+    async def maketeams(self, ctx, n, *args):
         """Divides people into n teams"""
         acc = []
         for v in args:
@@ -88,7 +86,7 @@ class Misc(commands.Cog):
     """
 
     @commands.command()
-    async def again(self,ctx):
+    async def again(self, ctx):
         """Rerolls the previous whatgame operation"""
         game = random.choice(globlist)
         await ctx.send('Maybe ' + game + ' is better?')
@@ -98,22 +96,21 @@ class Misc(commands.Cog):
     """
 
     @commands.command()
-    async def coin(self,ctx):
+    async def coin(self, ctx):
         """Flips a coin."""
         acc = ["Heads", "Tails"]
         game = random.choice(acc)
         await ctx.send(game)
 
-
     @commands.command(hidden=True)
-    async def remindmedep(self,ctx,tim,message):
+    async def remindmedep(self, ctx, tim, message):
 
         """Flips a coin."""
         print("working")
         now = datetime.now()
         run_at = now + timedelta(seconds=int(tim))
         delay = (run_at - now).total_seconds()
-        threading.Timer(delay, self.send(ctx,message)).start()
+        threading.Timer(delay, self.send(ctx, message)).start()
 
     def send(self):
         async def send(ctx, message):
@@ -123,8 +120,8 @@ class Misc(commands.Cog):
     goldmine(ctx) is a hidden command that leads you to Eldorado
     """
 
-    @commands.command(pass_context=True, hidden=True)
-    async def goldmine(self,ctx):
+    @commands.command(hidden=True)
+    async def goldmine(self, ctx):
         """Leads you to Eldorado"""
         await ctx.send('You\'ve found it ' + 'https://www.youtube.com/user/Rayzor324/videos?view_as=subscriber')
 
@@ -133,8 +130,8 @@ class Misc(commands.Cog):
     contain games frequented.
     """
 
-    @commands.command(pass_context=True, hidden=True)
-    async def usual(self,ctx):
+    @commands.command(hidden=True)
+    async def usual(self, ctx):
         """Deprecated function"""
         acc = ["Smite", "League"]
         game = random.choice(acc)
@@ -144,8 +141,8 @@ class Misc(commands.Cog):
     headshot(ctx) provides a headshot of the great god's face
     """
 
-    @commands.command(pass_context=True, hidden=True)
-    async def headshot(self,ctx):
+    @commands.command(hidden=True)
+    async def headshot(self, ctx):
         """Provides a headshot of the great god's face"""
         channel = ctx.message.channel
         await channel.send(file=discord.File('imageMu/AmumuSquare.png'))
@@ -153,18 +150,17 @@ class Misc(commands.Cog):
     glenoku(ctx) is  exactly what you think it is
     """
 
-    @commands.command()
-    async def glenoku(self,ctx):
+    @commands.command(hidden=True)
+    async def glenoku(self, ctx):
         """Exactly what you think it is"""
         await ctx.send('https://www.youtube.com/watch?v=D7c7ywgWnAY')
-
 
     """
     glenoku2(ctx) is a hidden comma
     """
 
-    @commands.command(pass_context=True, hidden=True)
-    async def glenoku2(self,ctx):
+    @commands.command(hidden=True)
+    async def glenoku2(self, ctx):
         """Oh dear it seems you've seen it"""
         await ctx.send("""In the works but for now:
                       https://vimeo.com/371258450 
@@ -172,20 +168,18 @@ class Misc(commands.Cog):
                       https://streamable.com/24vi5
                       """)
 
-
     """
     glenoku3(ctx) is a hidden comma
     """
 
-    @commands.command(pass_context=True, hidden=True)
-    async def glenoku3(self,ctx):
+    @commands.command(hidden=True)
+    async def glenoku3(self, ctx):
         """Oh dear it seems you've seen it again"""
         await ctx.send("""This one also got blocked cause of copyright, continuation of the GCU (Glen Cinematic Universe)
         https://vimeo.com/371526746
         pass: glen
         https://streamable.com/ru0aogit
         """)
-
 
     @commands.command()
     async def uwu(self, ctx, *args):

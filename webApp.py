@@ -9,7 +9,7 @@ import praw
 import re
 import requests
 import time
-import twitter
+from twitter import *
 from discord.ext import commands
 from saucenao import SauceNao
 
@@ -24,18 +24,16 @@ reddit = praw.Reddit(client_id=config.config["redditClientID"],
 reddit.read_only = True
 
 # TWITTER BLOCK
-api = twitter.Api(config.config["twitConsKey"],
-                  config.config["twitConsSecret"],
-                  config.config["twitAccessKey"],
-                  config.config["twitAccessSecret"],
-                  tweet_mode='extended')
+api = Twitter(auth=OAuth(config.config["twitConsKey"],
+                         config.config["twitConsSecret"],
+                         config.config["twitAccessKey"],
+                         config.config["twitAccessSecret"]))
 
 
 saucenao = SauceNao(directory='directory', databases=999, minimum_similarity=65, combine_api_types=False, api_key=config.config['saucenao'],
                     exclude_categories='', move_to_categories=False,  use_author_as_category=False,
                     output_type=SauceNao.API_HTML_TYPE, start_file='', log_level=logging.ERROR,
                     title_minimum_similarity=90)
-
 
 
 class web(commands.Cog):
@@ -83,7 +81,7 @@ class web(commands.Cog):
     https://soruly.github.io/trace.moe/#/
     """
 
-    @commands.command(pass_context=True, aliases=['whatanime'])
+    @commands.command(aliases=['whatanime'])
     async def weebdar(self, ctx, url):
         """Finds name of anime using trace.moe API"""
         try:
@@ -106,14 +104,15 @@ class web(commands.Cog):
             Similarity: {similarity}
             Mal:  {mal}""".format(title=title, ep=ep, similarity=sim, mal=mal))
 
-    @commands.command(pass_context=True, aliases=['whatmanga'])
+    @commands.command(aliases=['whatmanga'])
     async def manga(self, ctx, url):
         """Finds name of manga"""
         a = urlparse(url)  #
         req.urlretrieve(url, os.getcwd() + "/imageMu/manga.jpg")
         print(os.getcwd())
         #img = Image.open("imageMu/" + os.path.basename(a.path))
-        filtered_results = saucenao.check_file(file_name=os.getcwd() + "/imageMu/manga.jpg")
+        filtered_results = saucenao.check_file(
+            file_name=os.getcwd() + "/imageMu/manga.jpg")
         print(filtered_results)
         head = filtered_results[0]
         similarity = head['header']['similarity'] + "%"
@@ -151,18 +150,22 @@ Link:  {link}```""")
         dic = r.json()
         await ctx.send('https://www.strawpoll.me/' + str(dic['id']))
 
-    @commands.command(pass_context=True, hidden=True, aliases=['borderlands'])
+    @commands.command(hidden=True, aliases=['borderlands'])
     async def shift(self, ctx):
         """gets the latest shift keys for borderlands 3 only"""
         acc = []
 
         # statuses = api.GetUserTimeline(906234810,count=100,exclude_replies=True) #For dgShift
-        statuses = api.GetUserTimeline(1185243019622137857, count=50, exclude_replies=True)
+        # statuses = api.GetUserTimeline(
+        #     1185243019622137857, count=50, exclude_replies=True)
+
+        statuses = api.statuses.user_timeline(screen_name="dgSHiFTCodesBL3")
 
         # print(statuses)
         for s in statuses:
             date_format = '%B %-d, %Y'
-            dt = date.fromtimestamp(s.created_at_in_seconds).strftime(date_format)
+            dt = date.fromtimestamp(
+                s.created_at_in_seconds).strftime(date_format)
             shift = shiftEx(s.full_text, dt)
             if shift != "None":
                 acc.append(shift)
@@ -170,8 +173,8 @@ Link:  {link}```""")
         await ctx.send(prettyList(acc))
         # print([s.text for s in statuses])
 
-    @commands.command( hidden=True)
-    async def monitor(self,ctx,base):
+    @commands.command(hidden=True)
+    async def monitor(self, ctx, base):
         url = base
         r = requests.get(url)
         html = r.text
@@ -182,16 +185,14 @@ Link:  {link}```""")
         while (html == html5):
             r = requests.get(url)
             html5 = r.text
-            n+=0.5
+            n += 0.5
             print("time :" + str(n))
             time.sleep(30.0 - ((time.time() - starttime) % 30.0))
 
         await ctx.author.send("It's up")
 
-
-
-    @commands.command( hidden=True)
-    async def monitortest(self,ctx):
+    @commands.command(hidden=True)
+    async def monitortest(self, ctx):
         await ctx.author.send("It's up")
 
 
@@ -214,14 +215,10 @@ def shiftEx(tweet, dt):
             n = re.search('[0-9]+ GOLD KEY', tweet)
             if m:
                 try:
-                    return m.group(0) + "  |  " + n.group(0)  + "  |  "  + dt
+                    return m.group(0) + "  |  " + n.group(0) + "  |  " + dt
                 except:
                     return m.group(0) + "  |  Other" + "       |  " + dt
     return "None"
-
-
-
-
 
 
 def prettyList(lst):
@@ -258,14 +255,15 @@ class why(commands.Cog):
         result = r.json()
         await ctx.send(result['file'])
 
-    @commands.command(hidden=y,enabled=False)
+    @commands.command(hidden=y, enabled=False)
     async def fact(self, ctx):
         """Gets a random fact (Currently Disabled; API down)"""
-        r = requests.get("https://uselessfacts.jsph.pl/random.json?language=en")
+        r = requests.get(
+            "https://uselessfacts.jsph.pl/random.json?language=en")
         result = r.json()
         await ctx.send("```Fact: \n" + result['text'] + "```")
 
-    @commands.command(hidden=y,enabled=False)
+    @commands.command(hidden=y, enabled=False)
     async def tfact(self, ctx):
         """Gets today's random fact (Currently Disabled; API down)"""
         r = requests.get("https://uselessfacts.jsph.pl/today.json?language=en")
@@ -286,13 +284,11 @@ class why(commands.Cog):
         r = requests.get("http://numbersapi.com/random/trivia")
         await ctx.send("```Fact: \n" + r.text + "```")
 
-
     @commands.command(hidden=y)
     async def yearfact(self, ctx):
         """Gets a fact about a random year"""
         r = requests.get("http://numbersapi.com/random/year")
         await ctx.send("```Fact: \n" + r.text + "```")
-
 
     @commands.command(hidden=y)
     async def mathfact(self, ctx):
@@ -312,7 +308,6 @@ class why(commands.Cog):
         r = requests.get("http://jservice.io/api/random")
         js = r.json()
         await ctx.send(f"Category: {js[0]['category']['title']}  \n\n Question: {js[0]['question']} \n \n ||{js[0]['answer']} ||")
-        
 
 
 def setup(bot):
